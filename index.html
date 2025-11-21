@@ -148,7 +148,7 @@
         .label-stickers-container {
             position: absolute;
             top: 20px;
-            left: 20px;
+            left: 0;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -169,6 +169,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             cursor: text;
             outline: none;
+            min-width: 80px;
         }
 
         .label-sticker:focus {
@@ -179,7 +180,7 @@
             position: absolute;
             top: 2px;
             right: 4px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             color: white;
             border: none;
             border-radius: 50%;
@@ -187,15 +188,19 @@
             height: 16px;
             font-size: 10px;
             cursor: pointer;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 0;
             line-height: 1;
         }
 
+        .label-sticker:hover .label-delete-btn {
+            display: flex;
+        }
+
         .label-delete-btn:hover {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .add-label-btn {
@@ -835,9 +840,11 @@
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'label-delete-btn no-export';
+            deleteBtn.contentEditable = false; // 버튼은 편집 불가
             deleteBtn.textContent = '×';
             deleteBtn.onclick = function(e) {
                 e.stopPropagation();
+                e.preventDefault();
                 removeLabelSticker(sticker);
             };
 
@@ -882,7 +889,13 @@
         }
 
         function adjustLabelWidths() {
-            if (labelStickers.length === 0) return;
+            const container = document.querySelector('.label-stickers-container');
+
+            if (labelStickers.length === 0) {
+                // 라벨이 없으면 기본 위치로
+                container.style.left = '0px';
+                return;
+            }
 
             // 임시로 auto width로 설정하여 실제 너비 측정
             labelStickers.forEach(sticker => {
@@ -898,7 +911,11 @@
                 }
             });
 
-            // 모든 스티커를 최대 너비로 설정
+            // 모든 스티커를 최대 너비로 설정하고 위치 조정
+            const leftOffset = -(maxWidth * 0.7); // 70%가 밖으로 나가도록
+
+            container.style.left = leftOffset + 'px';
+
             labelStickers.forEach(sticker => {
                 sticker.style.width = maxWidth + 'px';
             });
