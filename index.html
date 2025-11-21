@@ -202,6 +202,30 @@
             grid-template-columns: 1fr;
         }
 
+        /* 이름/나이 스택 레이아웃 */
+        .name-age-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .stacked-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stacked-inputs .input-large {
+            font-size: 18px;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .stacked-inputs .input-small {
+            font-size: 13px;
+            color: #999;
+        }
+
         /* 인풋 스타일 */
         .input-group {
             position: relative;
@@ -403,14 +427,20 @@
 
                 <!-- 오른쪽: 정보 입력 -->
                 <div class="info-section">
-                    <div class="info-row">
+                    <div class="name-age-row">
                         <div class="input-group">
                             <label>이름</label>
-                            <input type="text" id="name" placeholder="한글 입력" />
+                            <div class="stacked-inputs">
+                                <input type="text" id="nameKor" class="input-large" placeholder="한글 입력" />
+                                <input type="text" id="nameEng" class="input-small" placeholder="" />
+                            </div>
                         </div>
                         <div class="input-group">
                             <label>나이</label>
-                            <input type="text" id="age" placeholder="님 나이 기준" />
+                            <div class="stacked-inputs">
+                                <input type="text" id="ageCalculated" class="input-large" placeholder="년 기준 나이" readonly />
+                                <input type="text" id="birthMonthDay" class="input-small" placeholder="월/일" oninput="calculateAge()" />
+                            </div>
                         </div>
                     </div>
 
@@ -562,6 +592,58 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // 나이 자동 계산 (2035년 5월 기준)
+        function calculateAge() {
+            const birthInput = document.getElementById('birthMonthDay').value;
+            const ageOutput = document.getElementById('ageCalculated');
+
+            if (!birthInput) {
+                ageOutput.value = '';
+                return;
+            }
+
+            // 월/일 파싱 (예: "3/15", "03/15" 등)
+            const parts = birthInput.split('/');
+            if (parts.length !== 2) {
+                ageOutput.value = '';
+                return;
+            }
+
+            const birthMonth = parseInt(parts[0]);
+            const birthDay = parseInt(parts[1]);
+
+            if (isNaN(birthMonth) || isNaN(birthDay) || birthMonth < 1 || birthMonth > 12 || birthDay < 1 || birthDay > 31) {
+                ageOutput.value = '';
+                return;
+            }
+
+            // 2035년 5월 기준
+            const referenceYear = 2035;
+            const referenceMonth = 5;
+
+            // 생년 계산 (월이 5월 이전이면 2035년생, 이후면 2034년생으로 가정)
+            let birthYear;
+            if (birthMonth < referenceMonth || (birthMonth === referenceMonth && birthDay <= 31)) {
+                // 아직 생일이 안 지났거나 5월생
+                birthYear = referenceYear;
+            } else {
+                // 생일이 지남
+                birthYear = referenceYear - 1;
+            }
+
+            // 만 나이 계산
+            let age = referenceYear - birthYear;
+            if (birthMonth > referenceMonth) {
+                age--;
+            } else if (birthMonth === referenceMonth) {
+                // 5월생인 경우는 일자로 판단 (정확한 날짜 필요)
+                // 여기서는 간단히 0세로 처리
+                age = 0;
+            }
+
+            ageOutput.value = `${birthYear}년생 ${birthMonth}월 ${birthDay}일 (만 ${age}세)`;
         }
 
         // 이미지 저장 기능 (나중에 활성화할 때 사용)
