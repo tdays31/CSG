@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Form Designer</title>
+    <style>
+        :root {
+            /* 유저 커스터마이징 가능한 CSS 변수 */
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --background-start: #f093fb;
+            --background-end: #f5576c;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --input-border: rgba(102, 126, 234, 0.3);
+            --input-focus: rgba(102, 126, 234, 0.6);
+            --text-color: #2d3748;
+            --label-color: #4a5568;
+            --shadow-color: rgba(102, 126, 234, 0.1);
+            --border-radius: 16px;
+            --input-radius: 12px;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-size: 16px;
+            --shadow-intensity: 1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* 커스터마이징 버튼 */
+        .customize-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--input-radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .customize-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 커스터마이징 패널 */
+        .customize-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+            padding: 80px 30px 30px;
+        }
+
+        .customize-panel.open {
+            right: 0;
+        }
+
+        .customize-panel h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-color);
+            margin-bottom: 8px;
+        }
+
+        .control-group input[type="color"],
+        .control-group input[type="range"],
+        .control-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-family: var(--font-family);
+        }
+
+        .control-group input[type="color"] {
+            height: 50px;
+            cursor: pointer;
+        }
+
+        /* 메인 폼 컨테이너 */
+        #form-container {
+            background: var(--input-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: 0 20px 60px calc(var(--shadow-color) * var(--shadow-intensity));
+        }
+
+        /* 상단 큰 입력 필드 */
+        .top-input-wrapper {
+            margin-bottom: 30px;
+        }
+
+        /* 메인 레이아웃 그리드 */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* 이미지 업로드 영역 */
+        .image-upload-area {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: var(--input-radius);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload-area:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            color: #718096;
+        }
+
+        .upload-placeholder svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        /* 우측 정보 입력 영역 */
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        /* 인풋 스타일 */
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 16px 16px 8px;
+            border: 2px solid var(--input-border);
+            border-radius: var(--input-radius);
+            font-size: var(--font-size);
+            font-family: var(--font-family);
+            background: white;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--label-color);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 4px;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label,
+        .input-group select:focus + label,
+        .input-group select:not([value=""]) + label,
+        .input-group textarea:focus + label,
+        .input-group textarea:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            padding-top: 20px;
+        }
+
+        .input-group.textarea-group label {
+            top: 24px;
+            transform: none;
+        }
+
+        .input-group textarea:focus + label,
+        .input-group textarea:not(:placeholder-shown) + label {
+            top: -10px;
+        }
+
+        /* 특이사항 및 오너 성명 섹션 */
+        .bottom-section {
+            margin-top: 30px;
+        }
+
+        .owner-section {
+            margin-top: 20px;
+        }
+
+        .owner-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--label-color);
+            margin-bottom: 15px;
+        }
+
+        /* 저장 버튼 (나중에 활성화) */
+        .save-btn {
+            display: none; /* 나중에 활성화 */
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--input-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 반응형 */
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .owner-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .customize-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="customize-btn" onclick="toggleCustomizePanel()">
+        🎨 디자인 커스터마이징
+    </button>
+
+    <div class="customize-panel" id="customizePanel">
+        <h3>디자인 설정</h3>
+
+        <div class="control-group">
+            <label>Primary Color</label>
+            <input type="color" id="primaryColor" value="#667eea" onchange="updateStyle('--primary-color', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>Secondary Color</label>
+            <input type="color" id="secondaryColor" value="#764ba2" onchange="updateStyle('--secondary-color', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>Input Background</label>
+            <input type="color" id="inputBg" value="#ffffff" onchange="updateInputBg(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>Text Color</label>
+            <input type="color" id="textColor" value="#2d3748" onchange="updateStyle('--text-color', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>Border Radius (px)</label>
+            <input type="range" id="borderRadius" min="0" max="30" value="16"
+                   oninput="updateStyle('--border-radius', this.value + 'px'); document.getElementById('radiusValue').textContent = this.value">
+            <span id="radiusValue">16</span>px
+        </div>
+
+        <div class="control-group">
+            <label>Input Border Radius (px)</label>
+            <input type="range" id="inputRadius" min="0" max="24" value="12"
+                   oninput="updateStyle('--input-radius', this.value + 'px'); document.getElementById('inputRadiusValue').textContent = this.value">
+            <span id="inputRadiusValue">12</span>px
+        </div>
+
+        <div class="control-group">
+            <label>Font Size (px)</label>
+            <input type="range" id="fontSize" min="12" max="20" value="16"
+                   oninput="updateStyle('--font-size', this.value + 'px'); document.getElementById('fontSizeValue').textContent = this.value">
+            <span id="fontSizeValue">16</span>px
+        </div>
+
+        <div class="control-group">
+            <label>Font Family</label>
+            <select id="fontFamily" onchange="updateStyle('--font-family', this.value)">
+                <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">System Default</option>
+                <option value="'Arial', sans-serif">Arial</option>
+                <option value="'Georgia', serif">Georgia</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'Verdana', sans-serif">Verdana</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Shadow Intensity</label>
+            <input type="range" id="shadowIntensity" min="0" max="3" step="0.1" value="1"
+                   oninput="updateStyle('--shadow-intensity', this.value); document.getElementById('shadowValue').textContent = this.value">
+            <span id="shadowValue">1</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="form-container">
+            <div class="top-input-wrapper">
+                <div class="input-group">
+                    <input type="text" id="topInput" placeholder=" " />
+                    <label>제목 입력</label>
+                </div>
+            </div>
+
+            <div class="main-grid">
+                <!-- 왼쪽: 이미지 업로드 -->
+                <div class="image-upload-area" onclick="document.getElementById('imageUpload').click()">
+                    <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
+                    <img class="preview-image" id="previewImage" alt="Preview">
+                    <div class="upload-placeholder" id="uploadPlaceholder">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                        </svg>
+                        <div>
+                            <strong>클릭하여 사진 넣는 곳</strong>
+                            <p style="font-size: 12px; margin-top: 5px;">이미지를 업로드하세요</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 정보 입력 -->
+                <div class="info-section">
+                    <div class="info-row">
+                        <div class="input-group">
+                            <input type="text" id="name" placeholder=" " />
+                            <label>이름</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="age" placeholder=" " />
+                            <label>나이</label>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="input-group">
+                            <input type="text" id="birthDate" placeholder=" " />
+                            <label>생년월일 (예: 2035년 5월)</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="absenceDate" placeholder=" " />
+                            <label>결석일</label>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="input-group">
+                            <input type="text" id="joinDate" placeholder=" " />
+                            <label>입사일</label>
+                        </div>
+                        <div class="input-group">
+                            <select id="department">
+                                <option value="">선택하세요</option>
+                                <option value="개발팀">개발팀</option>
+                                <option value="디자인팀">디자인팀</option>
+                                <option value="기획팀">기획팀</option>
+                                <option value="마케팅팀">마케팅팀</option>
+                            </select>
+                            <label>부서</label>
+                        </div>
+                    </div>
+
+                    <div class="info-row full">
+                        <div class="input-group textarea-group">
+                            <textarea id="ability" placeholder=" "></textarea>
+                            <label>능력</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 특이사항 -->
+            <div class="bottom-section">
+                <div class="input-group textarea-group">
+                    <textarea id="specialNotes" placeholder=" " style="min-height: 120px;"></textarea>
+                    <label>특이사항</label>
+                </div>
+            </div>
+
+            <!-- 오너 성명 -->
+            <div class="owner-section">
+                <div class="section-title">오너 성명</div>
+                <div class="owner-grid">
+                    <div class="input-group">
+                        <select id="owner1">
+                            <option value="">선택</option>
+                            <option value="김">김</option>
+                            <option value="이">이</option>
+                            <option value="박">박</option>
+                            <option value="최">최</option>
+                        </select>
+                        <label>성</label>
+                    </div>
+                    <div class="input-group">
+                        <select id="owner2">
+                            <option value="">선택</option>
+                            <option value="민">민</option>
+                            <option value="서">서</option>
+                            <option value="준">준</option>
+                            <option value="현">현</option>
+                        </select>
+                        <label>이름1</label>
+                    </div>
+                    <div class="input-group">
+                        <select id="owner3">
+                            <option value="">선택</option>
+                            <option value="수">수</option>
+                            <option value="진">진</option>
+                            <option value="호">호</option>
+                            <option value="영">영</option>
+                        </select>
+                        <label>이름2</label>
+                    </div>
+                    <div class="input-group">
+                        <select id="owner4">
+                            <option value="">선택</option>
+                            <option value="A">직급A</option>
+                            <option value="B">직급B</option>
+                            <option value="C">직급C</option>
+                        </select>
+                        <label>직급</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 저장 버튼 (나중에 활성화) -->
+            <button class="save-btn" id="saveBtn">
+                💾 이미지로 저장
+            </button>
+        </div>
+    </div>
+
+    <!-- html2canvas 라이브러리 (나중에 이미지 저장 기능을 위해) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        // 커스터마이징 패널 토글
+        function toggleCustomizePanel() {
+            const panel = document.getElementById('customizePanel');
+            panel.classList.toggle('open');
+        }
+
+        // CSS 변수 업데이트
+        function updateStyle(property, value) {
+            document.documentElement.style.setProperty(property, value);
+        }
+
+        // Input background 업데이트 (투명도 포함)
+        function updateInputBg(value) {
+            // 색상 값을 rgba로 변환하여 투명도 유지
+            const r = parseInt(value.slice(1, 3), 16);
+            const g = parseInt(value.slice(3, 5), 16);
+            const b = parseInt(value.slice(5, 7), 16);
+            updateStyle('--input-bg', `rgba(${r}, ${g}, ${b}, 0.9)`);
+        }
+
+        // 이미지 미리보기
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById('previewImage');
+                    const placeholder = document.getElementById('uploadPlaceholder');
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 이미지 저장 기능 (나중에 활성화할 때 사용)
+        /*
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const formContainer = document.getElementById('form-container');
+            html2canvas(formContainer, {
+                scale: 2,
+                backgroundColor: null,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'form-image.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+        */
+
+        // 패널 외부 클릭 시 닫기
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('customizePanel');
+            const btn = document.querySelector('.customize-btn');
+
+            if (panel.classList.contains('open') &&
+                !panel.contains(event.target) &&
+                !btn.contains(event.target)) {
+                panel.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
