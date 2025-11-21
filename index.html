@@ -14,8 +14,8 @@
             --input-bg: rgba(255, 255, 255, 0.9);
             --input-border: rgba(102, 126, 234, 0.3);
             --input-focus: rgba(102, 126, 234, 0.6);
-            --text-color: #2d3748;
-            --label-color: #4a5568;
+            --text-color: #333333;
+            --label-color: #999999;
             --shadow-color: rgba(102, 126, 234, 0.1);
             --border-radius: 16px;
             --input-radius: 12px;
@@ -155,7 +155,7 @@
         /* 메인 레이아웃 그리드 */
         .main-grid {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 400px 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
@@ -164,8 +164,8 @@
         .image-upload-area {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             border-radius: var(--input-radius);
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -233,13 +233,13 @@
 
         .stacked-inputs .input-large {
             font-size: 18px;
-            color: #000;
+            color: var(--text-color);
             font-weight: 600;
         }
 
         .stacked-inputs .input-small {
             font-size: 13px;
-            color: #999;
+            color: var(--text-color);
         }
 
         /* 나이 입력 3칸 그리드 */
@@ -283,7 +283,7 @@
         input:focus,
         select:focus,
         textarea:focus {
-            border-bottom-color: var(--primary-color);
+            border-bottom-color: #ddd;
         }
 
         textarea {
@@ -295,7 +295,7 @@
 
         textarea:hover,
         textarea:focus {
-            border-color: var(--primary-color);
+            border-color: #ddd;
         }
 
         /* 특이사항 및 오너 성명 섹션 */
@@ -381,7 +381,7 @@
             <label>Input Background</label>
             <select id="inputBgBase" onchange="updateInputBgBase()">
                 <option value="#ffffff" selected>화이트 (#fff)</option>
-                <option value="#000000">블랙 (#000)</option>
+                <option value="#333333">짙은 회색 (#333)</option>
             </select>
         </div>
 
@@ -396,7 +396,7 @@
             <label>텍스트 색상</label>
             <select id="textColorBase" onchange="updateTextColors()">
                 <option value="#ffffff">화이트 (#fff)</option>
-                <option value="#000000" selected>블랙 (#000)</option>
+                <option value="#333333" selected>짙은 회색 (#333)</option>
             </select>
         </div>
 
@@ -432,6 +432,13 @@
         <div class="control-group">
             <label>폰트 이름</label>
             <input type="text" id="fontName" placeholder="예: 'Noto Sans KR'" onchange="updateFontFamily(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>
+                <input type="checkbox" id="birthInputsToggle" onchange="toggleBirthInputs()" checked>
+                출생 입력박스 표시
+            </label>
         </div>
 
         <div class="control-group">
@@ -695,6 +702,13 @@
                 document.body.style.backgroundImage = '';
                 document.body.style.background = 'linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)';
             }
+        }
+
+        // 출생 입력박스 토글
+        function toggleBirthInputs() {
+            const birthInputsGrid = document.querySelector('.age-inputs-grid');
+            const isChecked = document.getElementById('birthInputsToggle').checked;
+            birthInputsGrid.style.display = isChecked ? 'grid' : 'none';
         }
 
         // 오너 성향 섹션 토글
