@@ -207,67 +207,44 @@
             position: relative;
         }
 
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--label-color);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
         .input-group input,
         .input-group select,
         .input-group textarea {
             width: 100%;
-            padding: 16px 16px 8px;
-            border: 2px solid var(--input-border);
-            border-radius: var(--input-radius);
+            padding: 8px 4px;
+            border: none;
+            border-bottom: 1px dotted #ddd;
+            background: transparent;
             font-size: var(--font-size);
             font-family: var(--font-family);
-            background: white;
-            transition: all 0.3s ease;
+            color: var(--text-color);
             outline: none;
+            transition: border-color 0.2s ease;
         }
 
         .input-group input:focus,
         .input-group select:focus,
         .input-group textarea:focus {
-            border-color: var(--input-focus);
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .input-group label {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--label-color);
-            font-size: 14px;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            background: white;
-            padding: 0 4px;
-        }
-
-        .input-group input:focus + label,
-        .input-group input:not(:placeholder-shown) + label,
-        .input-group select:focus + label,
-        .input-group select:not([value=""]) + label,
-        .input-group textarea:focus + label,
-        .input-group textarea:not(:placeholder-shown) + label {
-            top: -10px;
-            font-size: 12px;
-            color: var(--primary-color);
-            font-weight: 600;
+            border-bottom-color: var(--primary-color);
         }
 
         .input-group textarea {
             min-height: 100px;
             resize: vertical;
-            padding-top: 20px;
+            border: 1px dotted #ddd;
+            padding: 8px;
         }
 
-        .input-group.textarea-group label {
-            top: 24px;
-            transform: none;
-        }
-
-        .input-group textarea:focus + label,
-        .input-group textarea:not(:placeholder-shown) + label {
-            top: -10px;
+        .input-group textarea:focus {
+            border-color: var(--primary-color);
         }
 
         /* 특이사항 및 오너 성명 섹션 */
@@ -403,8 +380,8 @@
         <div id="form-container">
             <div class="top-input-wrapper">
                 <div class="input-group">
-                    <input type="text" id="topInput" placeholder=" " />
                     <label>제목 입력</label>
+                    <input type="text" id="topInput" placeholder="" />
                 </div>
             </div>
 
@@ -428,47 +405,59 @@
                 <div class="info-section">
                     <div class="info-row">
                         <div class="input-group">
-                            <input type="text" id="name" placeholder=" " />
                             <label>이름</label>
+                            <input type="text" id="name" placeholder="한글 입력" />
                         </div>
                         <div class="input-group">
-                            <input type="text" id="age" placeholder=" " />
                             <label>나이</label>
+                            <input type="text" id="age" placeholder="님 나이 기준" />
                         </div>
                     </div>
 
                     <div class="info-row">
                         <div class="input-group">
-                            <input type="text" id="birthDate" placeholder=" " />
-                            <label>생년월일 (예: 2035년 5월)</label>
+                            <label>생년월일</label>
+                            <input type="text" id="birthMonth" placeholder="월은 한글" />
                         </div>
                         <div class="input-group">
-                            <input type="text" id="absenceDate" placeholder=" " />
+                            <label></label>
+                            <input type="text" id="birthDetail" placeholder="생일(월/일) 입력식 2035년 5월을 기준으로 넣다는 설명지 출력" />
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="input-group">
                             <label>결석일</label>
+                            <input type="text" id="absentDate" placeholder="월은 한글" />
+                        </div>
+                        <div class="input-group">
+                            <label>입사일</label>
+                            <input type="text" id="joinDate" placeholder="" />
                         </div>
                     </div>
 
                     <div class="info-row">
                         <div class="input-group">
-                            <input type="text" id="joinDate" placeholder=" " />
-                            <label>입사일</label>
-                        </div>
-                        <div class="input-group">
+                            <label>부서</label>
                             <select id="department">
                                 <option value="">선택하세요</option>
                                 <option value="개발팀">개발팀</option>
                                 <option value="디자인팀">디자인팀</option>
+                                <option value="UI개발팀">UI개발팀</option>
                                 <option value="기획팀">기획팀</option>
                                 <option value="마케팅팀">마케팅팀</option>
                             </select>
-                            <label>부서</label>
+                        </div>
+                        <div class="input-group">
+                            <label>능력</label>
+                            <input type="text" id="ability" placeholder="" />
                         </div>
                     </div>
 
                     <div class="info-row full">
-                        <div class="input-group textarea-group">
-                            <textarea id="ability" placeholder=" "></textarea>
-                            <label>능력</label>
+                        <div class="input-group">
+                            <label></label>
+                            <textarea id="abilityDetail" placeholder=""></textarea>
                         </div>
                     </div>
                 </div>
@@ -476,9 +465,9 @@
 
             <!-- 특이사항 -->
             <div class="bottom-section">
-                <div class="input-group textarea-group">
-                    <textarea id="specialNotes" placeholder=" " style="min-height: 120px;"></textarea>
+                <div class="input-group">
                     <label>특이사항</label>
+                    <textarea id="specialNotes" placeholder="" style="min-height: 120px;"></textarea>
                 </div>
             </div>
 
@@ -487,6 +476,7 @@
                 <div class="section-title">오너 성명</div>
                 <div class="owner-grid">
                     <div class="input-group">
+                        <label>성</label>
                         <select id="owner1">
                             <option value="">선택</option>
                             <option value="김">김</option>
@@ -494,9 +484,9 @@
                             <option value="박">박</option>
                             <option value="최">최</option>
                         </select>
-                        <label>성</label>
                     </div>
                     <div class="input-group">
+                        <label>이름1</label>
                         <select id="owner2">
                             <option value="">선택</option>
                             <option value="민">민</option>
@@ -504,9 +494,9 @@
                             <option value="준">준</option>
                             <option value="현">현</option>
                         </select>
-                        <label>이름1</label>
                     </div>
                     <div class="input-group">
+                        <label>이름2</label>
                         <select id="owner3">
                             <option value="">선택</option>
                             <option value="수">수</option>
@@ -514,16 +504,15 @@
                             <option value="호">호</option>
                             <option value="영">영</option>
                         </select>
-                        <label>이름2</label>
                     </div>
                     <div class="input-group">
+                        <label>직급</label>
                         <select id="owner4">
                             <option value="">선택</option>
                             <option value="A">직급A</option>
                             <option value="B">직급B</option>
                             <option value="C">직급C</option>
                         </select>
-                        <label>직급</label>
                     </div>
                 </div>
             </div>
