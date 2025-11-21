@@ -325,13 +325,6 @@
             gap: 30px;
         }
 
-        /* 3칸 레이아웃 (혈액형/부서/입사일) */
-        .three-col-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-        }
-
         .stacked-inputs {
             display: flex;
             flex-direction: column;
@@ -356,6 +349,20 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
+        }
+
+        /* 출생 하단 상세 정보 (혈액형/입사일/부서) */
+        .birth-detail-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .birth-detail-row input,
+        .birth-detail-row select {
+            font-size: 12px;
+            padding: 4px 4px;
         }
 
         /* 인풋 스타일 */
@@ -634,27 +641,17 @@
                                     <input type="text" id="birthMonth" class="input-small" placeholder="태어난 월" oninput="calculateBirthInfo()" />
                                     <input type="text" id="birthDay" class="input-small" placeholder="태어난 일" oninput="calculateBirthInfo()" />
                                 </div>
+                                <div class="birth-detail-row">
+                                    <input type="text" id="bloodType" placeholder="혈액형" />
+                                    <input type="text" id="joinDate" placeholder="입사일 (yyyy.MM.dd)" />
+                                    <select id="department">
+                                        <option value="">부서</option>
+                                        <option value="지옥">지옥</option>
+                                        <option value="아귀">아귀</option>
+                                        <option value="축생">축생</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="three-col-row">
-                        <div class="input-group">
-                            <label>혈액형</label>
-                            <input type="text" id="bloodType" placeholder="" />
-                        </div>
-                        <div class="input-group">
-                            <label>입사일</label>
-                            <input type="text" id="joinDate" placeholder="yyyy.MM.dd" />
-                        </div>
-                        <div class="input-group">
-                            <label>부서</label>
-                            <select id="department">
-                                <option value="">선택하세요</option>
-                                <option value="지옥">지옥</option>
-                                <option value="아귀">아귀</option>
-                                <option value="축생">축생</option>
-                            </select>
                         </div>
                     </div>
 
