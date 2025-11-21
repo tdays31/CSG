@@ -24,6 +24,8 @@
             --shadow-intensity: 1;
             --sticker-bg: #ff6b6b;
             --sticker-text: #ffffff;
+            --image-bg-start: #f5f7fa;
+            --image-bg-end: #c3cfe2;
         }
 
         * {
@@ -267,7 +269,7 @@
 
         /* 이미지 업로드 영역 */
         .image-upload-area {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, var(--image-bg-start) 0%, var(--image-bg-end) 100%);
             border-radius: var(--input-radius);
             width: 400px;
             height: 400px;
@@ -340,11 +342,13 @@
             font-size: 18px;
             color: var(--text-color);
             font-weight: 600;
+            padding: 4px 4px;
         }
 
         .stacked-inputs .input-small {
             font-size: 13px;
-            color: var(--text-color);
+            color: #999999 !important;
+            padding: 4px 4px;
         }
 
         /* 나이 입력 3칸 그리드 */
@@ -521,6 +525,16 @@
         </div>
 
         <div class="control-group">
+            <label>이미지 배경색 (시작)</label>
+            <input type="color" id="imageBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>이미지 배경색 (끝)</label>
+            <input type="color" id="imageBgEnd" value="#c3cfe2" onchange="updateStyle('--image-bg-end', this.value)">
+        </div>
+
+        <div class="control-group">
             <label>Border Radius (px)</label>
             <input type="range" id="borderRadius" min="0" max="30" value="16"
                    oninput="updateStyle('--border-radius', this.value + 'px'); document.getElementById('radiusValue').textContent = this.value">
@@ -553,6 +567,13 @@
             <label>
                 <input type="checkbox" id="birthInputsToggle" onchange="toggleBirthInputs()" checked>
                 출생 입력박스 표시
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label>
+                <input type="checkbox" id="birthUnknownToggle" onchange="toggleBirthUnknown()">
+                출생 불명으로 표시
             </label>
         </div>
 
@@ -833,6 +854,24 @@
             const birthInputsGrid = document.querySelector('.age-inputs-grid');
             const isChecked = document.getElementById('birthInputsToggle').checked;
             birthInputsGrid.style.display = isChecked ? 'grid' : 'none';
+        }
+
+        // 출생 불명 토글
+        function toggleBirthUnknown() {
+            const birthOutput = document.getElementById('birthInfoCalculated');
+            const birthInputsGrid = document.querySelector('.age-inputs-grid');
+            const birthInputsToggle = document.getElementById('birthInputsToggle');
+            const isChecked = document.getElementById('birthUnknownToggle').checked;
+
+            if (isChecked) {
+                birthOutput.value = '불명';
+                birthInputsGrid.style.display = 'none';
+                birthInputsToggle.disabled = true;
+            } else {
+                birthOutput.value = '';
+                birthInputsGrid.style.display = birthInputsToggle.checked ? 'grid' : 'none';
+                birthInputsToggle.disabled = false;
+            }
         }
 
         // 오너 성향 섹션 토글
