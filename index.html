@@ -22,6 +22,8 @@
             --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             --font-size: 16px;
             --shadow-intensity: 1;
+            --sticker-bg: #ff6b6b;
+            --sticker-text: #ffffff;
         }
 
         * {
@@ -139,6 +141,84 @@
             border-radius: var(--border-radius);
             padding: 40px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        /* 라벨 스티커 영역 */
+        .label-stickers-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .label-sticker {
+            background: var(--sticker-bg, #ff6b6b);
+            color: var(--sticker-text, #ffffff);
+            padding: 6px 24px 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            position: relative;
+            white-space: pre-wrap;
+            word-break: break-word;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: text;
+            outline: none;
+        }
+
+        .label-sticker:focus {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .label-delete-btn {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .label-delete-btn:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .add-label-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-label-btn:hover {
+            opacity: 0.9;
+        }
+
+        .add-label-btn.no-export {
+            /* 이미지 저장 시 숨김 처리용 클래스 */
         }
 
         /* 상단 큰 입력 필드 */
@@ -406,6 +486,16 @@
         </div>
 
         <div class="control-group">
+            <label>라벨 스티커 배경색</label>
+            <input type="color" id="stickerBg" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>라벨 스티커 텍스트색</label>
+            <input type="color" id="stickerText" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)">
+        </div>
+
+        <div class="control-group">
             <label>Border Radius (px)</label>
             <input type="range" id="borderRadius" min="0" max="30" value="16"
                    oninput="updateStyle('--border-radius', this.value + 'px'); document.getElementById('radiusValue').textContent = this.value">
@@ -451,6 +541,14 @@
 
     <div class="container">
         <div id="form-container">
+            <!-- 라벨 스티커 영역 -->
+            <div class="label-stickers-container" id="labelStickersContainer">
+                <button class="add-label-btn no-export" onclick="addLabelSticker()">
+                    <span>+</span>
+                    <span>라벨 추가</span>
+                </button>
+            </div>
+
             <div class="top-input-wrapper">
                 <input type="text" id="topInput" placeholder="한마디" aria-label="한마디" />
             </div>
@@ -717,6 +815,93 @@
             const ownerSection = document.querySelector('.owner-section');
             const isChecked = document.getElementById('ownerSectionToggle').checked;
             ownerSection.style.display = isChecked ? 'block' : 'none';
+        }
+
+        // 라벨 스티커 관리
+        let labelStickers = [];
+        const MAX_LABELS = 10;
+
+        function addLabelSticker() {
+            if (labelStickers.length >= MAX_LABELS) {
+                alert('최대 10개까지만 추가할 수 있습니다.');
+                return;
+            }
+
+            const sticker = document.createElement('div');
+            sticker.className = 'label-sticker';
+            sticker.contentEditable = true;
+            sticker.textContent = '라벨 텍스트';
+            sticker.dataset.index = labelStickers.length;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'label-delete-btn no-export';
+            deleteBtn.textContent = '×';
+            deleteBtn.onclick = function(e) {
+                e.stopPropagation();
+                removeLabelSticker(sticker);
+            };
+
+            sticker.appendChild(deleteBtn);
+
+            const container = document.getElementById('labelStickersContainer');
+            const addBtn = container.querySelector('.add-label-btn');
+            container.insertBefore(sticker, addBtn);
+
+            labelStickers.push(sticker);
+
+            // 포커스 및 텍스트 선택
+            sticker.focus();
+            selectStickerText(sticker);
+
+            // 입력 이벤트 리스너 추가
+            sticker.addEventListener('input', adjustLabelWidths);
+            sticker.addEventListener('blur', adjustLabelWidths);
+
+            adjustLabelWidths();
+        }
+
+        function removeLabelSticker(sticker) {
+            sticker.remove();
+            const index = labelStickers.indexOf(sticker);
+            if (index > -1) {
+                labelStickers.splice(index, 1);
+            }
+            adjustLabelWidths();
+        }
+
+        function selectStickerText(sticker) {
+            const range = document.createRange();
+            const sel = window.getSelection();
+            // 삭제 버튼 제외하고 텍스트만 선택
+            const textNode = Array.from(sticker.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+            if (textNode) {
+                range.selectNodeContents(textNode);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+
+        function adjustLabelWidths() {
+            if (labelStickers.length === 0) return;
+
+            // 임시로 auto width로 설정하여 실제 너비 측정
+            labelStickers.forEach(sticker => {
+                sticker.style.width = 'auto';
+            });
+
+            // 가장 긴 너비 찾기
+            let maxWidth = 0;
+            labelStickers.forEach(sticker => {
+                const width = sticker.offsetWidth;
+                if (width > maxWidth) {
+                    maxWidth = width;
+                }
+            });
+
+            // 모든 스티커를 최대 너비로 설정
+            labelStickers.forEach(sticker => {
+                sticker.style.width = maxWidth + 'px';
+            });
         }
 
         // 이미지 저장 기능 (나중에 활성화할 때 사용)
