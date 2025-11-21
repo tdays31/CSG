@@ -138,7 +138,7 @@
             backdrop-filter: blur(20px);
             border-radius: var(--border-radius);
             padding: 40px;
-            box-shadow: 0 20px 60px calc(var(--shadow-color) * var(--shadow-intensity));
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         /* 상단 큰 입력 필드 */
@@ -241,6 +241,13 @@
             color: #999;
         }
 
+        /* 나이 입력 3칸 그리드 */
+        .age-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
         /* 인풋 스타일 */
         .input-group {
             position: relative;
@@ -260,7 +267,7 @@
             width: 100%;
             padding: 8px 4px;
             border: none;
-            border-bottom: 1px dotted #ddd;
+            border-bottom: 1px dotted transparent;
             background: transparent;
             font-size: var(--font-size);
             font-family: var(--font-family);
@@ -269,6 +276,9 @@
             transition: border-color 0.2s ease;
         }
 
+        input:hover,
+        select:hover,
+        textarea:hover,
         input:focus,
         select:focus,
         textarea:focus {
@@ -278,10 +288,11 @@
         textarea {
             min-height: 100px;
             resize: vertical;
-            border: 1px dotted #ddd;
+            border: 1px dotted transparent;
             padding: 8px;
         }
 
+        textarea:hover,
         textarea:focus {
             border-color: var(--primary-color);
         }
@@ -390,6 +401,11 @@
         </div>
 
         <div class="control-group">
+            <label>배경 이미지 URL</label>
+            <input type="text" id="bgImageUrl" placeholder="이미지 URL 입력" onchange="updateBackgroundImage(this.value)">
+        </div>
+
+        <div class="control-group">
             <label>
                 <input type="checkbox" id="ownerSectionToggle" onchange="toggleOwnerSection()" checked>
                 오너 성향 활성화
@@ -426,14 +442,18 @@
                             <label>이름</label>
                             <div class="stacked-inputs">
                                 <input type="text" id="nameKor" class="input-large" placeholder="한글 입력" />
-                                <input type="text" id="nameEng" class="input-small" placeholder="" />
+                                <input type="text" id="nameEng" class="input-small" placeholder="영문 입력" />
                             </div>
                         </div>
                         <div class="input-group">
                             <label>나이</label>
                             <div class="stacked-inputs">
-                                <input type="text" id="birthYearCalculated" class="input-large" placeholder="" readonly />
-                                <input type="text" id="koreanAge" class="input-small" placeholder="나이 입력" oninput="calculateBirthYear()" />
+                                <input type="text" id="birthInfoCalculated" class="input-large" placeholder="" readonly />
+                                <div class="age-inputs-grid">
+                                    <input type="text" id="koreanAge" class="input-small" placeholder="현재 나이" oninput="calculateBirthInfo()" />
+                                    <input type="text" id="birthMonth" class="input-small" placeholder="태어난 월" oninput="calculateBirthInfo()" />
+                                    <input type="text" id="birthDay" class="input-small" placeholder="태어난 일" oninput="calculateBirthInfo()" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -454,7 +474,7 @@
                         </div>
                         <div class="input-group">
                             <label>입사일</label>
-                            <input type="text" id="joinDate" placeholder="" />
+                            <input type="text" id="joinDate" placeholder="yyyy.MM.dd" />
                         </div>
                     </div>
 
@@ -473,7 +493,7 @@
             <div class="bottom-section">
                 <div class="input-group">
                     <label>특이사항</label>
-                    <textarea id="specialNotes" placeholder="" style="min-height: 120px;"></textarea>
+                    <textarea id="specialNotes" placeholder="주변인이 쉽게 알 수 있는 설정만을 간략히 요약하여 작성하시는 것을 권장드립니다." style="min-height: 120px;"></textarea>
                 </div>
             </div>
 
@@ -553,19 +573,21 @@
             }
         }
 
-        // 출생년도 자동 계산 (2035년 기준, 한국식 나이)
-        function calculateBirthYear() {
+        // 출생 정보 자동 계산 (2035년 기준, 한국식 나이)
+        function calculateBirthInfo() {
             const ageInput = document.getElementById('koreanAge').value;
-            const birthYearOutput = document.getElementById('birthYearCalculated');
+            const monthInput = document.getElementById('birthMonth').value;
+            const dayInput = document.getElementById('birthDay').value;
+            const birthInfoOutput = document.getElementById('birthInfoCalculated');
 
             if (!ageInput) {
-                birthYearOutput.value = '';
+                birthInfoOutput.value = '';
                 return;
             }
 
             const koreanAge = parseInt(ageInput);
             if (isNaN(koreanAge) || koreanAge < 1 || koreanAge > 150) {
-                birthYearOutput.value = '';
+                birthInfoOutput.value = '';
                 return;
             }
 
@@ -573,11 +595,38 @@
             const referenceYear = 2035;
 
             // 한국식 나이로 출생년도 계산
-            // 한국 나이 = 현재년도 - 출생년도 + 1
-            // 따라서 출생년도 = 현재년도 - 한국나이 + 1
             const birthYear = referenceYear - koreanAge + 1;
 
-            birthYearOutput.value = `${birthYear}년생`;
+            let result = `${birthYear}년생`;
+
+            // 월과 일 추가
+            if (monthInput && dayInput) {
+                const month = parseInt(monthInput);
+                const day = parseInt(dayInput);
+                if (!isNaN(month) && !isNaN(day) && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+                    result += ` ${month}월 ${day}일`;
+                }
+            } else if (monthInput) {
+                const month = parseInt(monthInput);
+                if (!isNaN(month) && month >= 1 && month <= 12) {
+                    result += ` ${month}월`;
+                }
+            }
+
+            birthInfoOutput.value = result;
+        }
+
+        // 배경 이미지 변경
+        function updateBackgroundImage(url) {
+            if (url) {
+                document.body.style.backgroundImage = `url('${url}')`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundAttachment = 'fixed';
+            } else {
+                document.body.style.backgroundImage = '';
+                document.body.style.background = 'linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)';
+            }
         }
 
         // 오너 성향 섹션 토글
