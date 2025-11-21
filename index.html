@@ -134,6 +134,11 @@
             margin-bottom: 30px;
         }
 
+        .top-input-wrapper input {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
         /* 메인 레이아웃 그리드 */
         .main-grid {
             display: grid;
@@ -224,21 +229,9 @@
         }
 
         /* 인풋 스타일 */
-        .input-group {
-            position: relative;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 11px;
-            color: var(--label-color);
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-
-        .input-group input,
-        .input-group select,
-        .input-group textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 8px 4px;
             border: none;
@@ -251,20 +244,20 @@
             transition: border-color 0.2s ease;
         }
 
-        .input-group input:focus,
-        .input-group select:focus,
-        .input-group textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             border-bottom-color: var(--primary-color);
         }
 
-        .input-group textarea {
+        textarea {
             min-height: 100px;
             resize: vertical;
             border: 1px dotted #ddd;
             padding: 8px;
         }
 
-        .input-group textarea:focus {
+        textarea:focus {
             border-color: var(--primary-color);
         }
 
@@ -400,10 +393,7 @@
     <div class="container">
         <div id="form-container">
             <div class="top-input-wrapper">
-                <div class="input-group">
-                    <label>제목 입력</label>
-                    <input type="text" id="topInput" placeholder="" />
-                </div>
+                <input type="text" id="topInput" placeholder="한마디" />
             </div>
 
             <div class="main-grid">
@@ -425,104 +415,69 @@
                 <!-- 오른쪽: 정보 입력 -->
                 <div class="info-section">
                     <div class="name-age-row">
-                        <div class="input-group">
-                            <label>이름</label>
-                            <div class="stacked-inputs">
-                                <input type="text" id="nameKor" class="input-large" placeholder="한글 입력" />
-                                <input type="text" id="nameEng" class="input-small" placeholder="" />
-                            </div>
+                        <div class="stacked-inputs">
+                            <input type="text" id="nameKor" class="input-large" placeholder="한글 입력" />
+                            <input type="text" id="nameEng" class="input-small" placeholder="" />
                         </div>
-                        <div class="input-group">
-                            <label>나이</label>
-                            <div class="stacked-inputs">
-                                <input type="text" id="ageCalculated" class="input-large" placeholder="년 기준 나이" readonly />
-                                <input type="text" id="birthMonthDay" class="input-small" placeholder="월/일" oninput="calculateAge()" />
-                            </div>
+                        <div class="stacked-inputs">
+                            <input type="text" id="ageCalculated" class="input-large" placeholder="년 기준 나이" readonly />
+                            <input type="text" id="birthMonthDay" class="input-small" placeholder="월/일" oninput="calculateAge()" />
                         </div>
                     </div>
 
                     <div class="three-col-row">
-                        <div class="input-group">
-                            <label>혈액형</label>
-                            <input type="text" id="bloodType" placeholder="" />
-                        </div>
-                        <div class="input-group">
-                            <label>부서</label>
-                            <select id="department">
-                                <option value="">선택하세요</option>
-                                <option value="지옥">지옥</option>
-                                <option value="아귀">아귀</option>
-                                <option value="축생">축생</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>입사일</label>
-                            <input type="text" id="joinDate" placeholder="" />
-                        </div>
+                        <input type="text" id="bloodType" placeholder="" />
+                        <select id="department">
+                            <option value="">선택하세요</option>
+                            <option value="지옥">지옥</option>
+                            <option value="아귀">아귀</option>
+                            <option value="축생">축생</option>
+                        </select>
+                        <input type="text" id="joinDate" placeholder="" />
                     </div>
 
-                    <div class="input-group">
-                        <label>능력</label>
-                        <input type="text" id="abilityName" placeholder="능력명" />
-                    </div>
+                    <input type="text" id="abilityName" placeholder="능력명" />
 
-                    <div class="input-group">
-                        <textarea id="abilityDesc" placeholder="능력 설명" style="min-height: 80px;"></textarea>
-                    </div>
+                    <textarea id="abilityDesc" placeholder="능력 설명" style="min-height: 80px;"></textarea>
                 </div>
             </div>
 
             <!-- 특이사항 -->
             <div class="bottom-section">
-                <div class="input-group">
-                    <label>특이사항</label>
-                    <textarea id="specialNotes" placeholder="" style="min-height: 120px;"></textarea>
-                </div>
+                <textarea id="specialNotes" placeholder="" style="min-height: 120px;"></textarea>
             </div>
 
-            <!-- 오너 성명 -->
+            <!-- 오너 성향 -->
             <div class="owner-section">
-                <div class="section-title">오너 성명</div>
+                <div class="section-title">오너 성향</div>
                 <div class="owner-grid">
-                    <div class="input-group">
-                        <label>성</label>
-                        <select id="owner1">
-                            <option value="">선택</option>
-                            <option value="김">김</option>
-                            <option value="이">이</option>
-                            <option value="박">박</option>
-                            <option value="최">최</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>이름1</label>
-                        <select id="owner2">
-                            <option value="">선택</option>
-                            <option value="민">민</option>
-                            <option value="서">서</option>
-                            <option value="준">준</option>
-                            <option value="현">현</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>이름2</label>
-                        <select id="owner3">
-                            <option value="">선택</option>
-                            <option value="수">수</option>
-                            <option value="진">진</option>
-                            <option value="호">호</option>
-                            <option value="영">영</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>직급</label>
-                        <select id="owner4">
-                            <option value="">선택</option>
-                            <option value="A">직급A</option>
-                            <option value="B">직급B</option>
-                            <option value="C">직급C</option>
-                        </select>
-                    </div>
+                    <select id="owner1">
+                        <option value="">선택</option>
+                        <option value="김">김</option>
+                        <option value="이">이</option>
+                        <option value="박">박</option>
+                        <option value="최">최</option>
+                    </select>
+                    <select id="owner2">
+                        <option value="">선택</option>
+                        <option value="민">민</option>
+                        <option value="서">서</option>
+                        <option value="준">준</option>
+                        <option value="현">현</option>
+                    </select>
+                    <select id="owner3">
+                        <option value="">선택</option>
+                        <option value="수">수</option>
+                        <option value="진">진</option>
+                        <option value="호">호</option>
+                        <option value="영">영</option>
+                    </select>
+                    <select id="owner4">
+                        <option value="">선택</option>
+                        <option value="A">직급A</option>
+                        <option value="B">직급B</option>
+                        <option value="C">직급C</option>
+                    </select>
                 </div>
             </div>
 
