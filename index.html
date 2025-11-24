@@ -1004,22 +1004,32 @@
             });
         }
 
-        // 이미지 저장 기능 (나중에 활성화할 때 사용)
-        /*
+        // 이미지 저장 기능
         document.getElementById('saveBtn').addEventListener('click', function() {
             const formContainer = document.getElementById('form-container');
+            const originalWidth = formContainer.offsetWidth;
+            const minWidth = 1200;
+
+            // 최소 너비 보장
+            if (originalWidth < minWidth) {
+                formContainer.style.width = minWidth + 'px';
+            }
+
             html2canvas(formContainer, {
                 scale: 2,
                 backgroundColor: null,
-                logging: false
+                logging: false,
+                width: Math.max(originalWidth, minWidth)
             }).then(canvas => {
+                // 원래 너비로 복원
+                formContainer.style.width = '';
+
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
                 link.href = canvas.toDataURL();
                 link.click();
             });
         });
-        */
 
         // 패널 외부 클릭 시 닫기
         document.addEventListener('click', function(event) {
