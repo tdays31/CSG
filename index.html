@@ -879,6 +879,8 @@
                 birthOutput.value = '';
                 birthInputsGrid.style.display = birthInputsToggle.checked ? 'grid' : 'none';
                 birthInputsToggle.disabled = false;
+                // 불명 해제 시 기존 입력값으로 다시 계산
+                calculateBirthInfo();
             }
         }
 
