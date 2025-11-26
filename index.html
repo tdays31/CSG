@@ -346,6 +346,7 @@
             color: #999999 !important;
             padding: 4px 4px;
             height: 24px;
+            line-height: 16px;
         }
 
         /* 나이 입력 3칸 그리드 */
@@ -358,6 +359,8 @@
 
         .age-inputs-grid input {
             height: 24px;
+            font-size: 13px;
+            line-height: 16px;
         }
 
         /* 출생 하단 상세 정보 (혈액형/입사일/부서) */
@@ -374,6 +377,7 @@
             font-size: 12px;
             padding: 4px 4px;
             height: 24px;
+            line-height: 16px;
         }
 
         /* 인풋 스타일 */
@@ -716,7 +720,7 @@
             </div>
 
             <!-- 저장 버튼 (나중에 활성화) -->
-            <button class="save-btn" id="saveBtn">
+            <button class="save-btn no-export" id="saveBtn">
                 💾 이미지로 저장
             </button>
         </div>
@@ -1023,7 +1027,10 @@
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
-                width: Math.max(originalWidth, minWidth)
+                width: Math.max(originalWidth, minWidth),
+                ignoreElements: function(element) {
+                    return element.classList.contains('no-export');
+                }
             }).then(canvas => {
                 // 원래 너비로 복원
                 formContainer.style.width = '';
