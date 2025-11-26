@@ -1014,16 +1014,24 @@
 
         // 이미지 저장 기능
         document.getElementById('saveBtn').addEventListener('click', function() {
+            const container = document.querySelector('.container');
             const formContainer = document.getElementById('form-container');
-            const originalWidth = formContainer.offsetWidth;
+            const originalWidth = container.offsetWidth;
             const minWidth = 1200;
+
+            // 배경 포함을 위해 container에 임시 스타일 적용
+            const originalBackground = container.style.background;
+            const originalPadding = container.style.padding;
+
+            container.style.background = getComputedStyle(document.body).background;
+            container.style.padding = '40px 20px';
 
             // 최소 너비 보장
             if (originalWidth < minWidth) {
-                formContainer.style.width = minWidth + 'px';
+                container.style.width = minWidth + 'px';
             }
 
-            html2canvas(formContainer, {
+            html2canvas(container, {
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
@@ -1032,8 +1040,10 @@
                     return element.classList.contains('no-export');
                 }
             }).then(canvas => {
-                // 원래 너비로 복원
-                formContainer.style.width = '';
+                // 원래 스타일로 복원
+                container.style.background = originalBackground;
+                container.style.padding = originalPadding;
+                container.style.width = '';
 
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
