@@ -804,10 +804,10 @@
                     <textarea id="specialNotes" placeholder="주변인이 쉽게 알 수 있는 설정만을 간략히 요약하여 작성하시는 것을 권장드립니다."></textarea>
                     <div class="image-selector" id="imageSelector">
                         <img id="selectedImage" alt="Selected">
-                        <div class="image-selector-placeholder">
+                        <div class="image-selector-placeholder no-export">
                             이미지 선택
                         </div>
-                        <div class="image-list-dropdown" id="imageDropdown">
+                        <div class="image-list-dropdown no-export" id="imageDropdown">
                             <!-- 이미지 목록이 여기에 동적으로 추가됩니다 -->
                         </div>
                     </div>
@@ -1233,11 +1233,28 @@
 
                 item.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    selectedImage.crossOrigin = 'anonymous';
-                    selectedImage.src = `Image/${imageName}`;
-                    imageSelector.classList.add('has-image');
-                    imageDropdown.classList.remove('open');
-                    saveToLocalStorage(); // 자동 저장
+
+                    // 이미지를 base64로 변환하여 CORS 문제 해결
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = tempImg.width;
+                        canvas.height = tempImg.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(tempImg, 0, 0);
+
+                        // base64로 변환하여 저장
+                        const base64Data = canvas.toDataURL('image/png');
+                        selectedImage.src = base64Data;
+                        imageSelector.classList.add('has-image');
+                        imageDropdown.classList.remove('open');
+                        saveToLocalStorage(); // 자동 저장
+                    };
+                    tempImg.onerror = function() {
+                        console.error('이미지 로드 실패:', imageName);
+                        alert('이미지를 로드할 수 없습니다. Image 폴더에 파일이 있는지 확인하세요.');
+                    };
+                    tempImg.src = `Image/${imageName}`;
                 });
 
                 imageDropdown.appendChild(item);
@@ -1443,12 +1460,11 @@
                     document.getElementById('alphaValue').textContent = data['inputBgAlpha'];
                 }
 
-                // 선택된 이미지 복원
+                // 선택된 이미지 복원 (base64 데이터)
                 if (data['selectedSpecialImage']) {
                     const selectedImage = document.getElementById('selectedImage');
                     const imageSelector = document.getElementById('imageSelector');
                     if (selectedImage && imageSelector) {
-                        selectedImage.crossOrigin = 'anonymous';
                         selectedImage.src = data['selectedSpecialImage'];
                         imageSelector.classList.add('has-image');
                     }
