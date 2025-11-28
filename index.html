@@ -1238,10 +1238,26 @@
                     const tempImg = new Image();
                     tempImg.onload = function() {
                         const canvas = document.createElement('canvas');
-                        canvas.width = tempImg.width;
-                        canvas.height = tempImg.height;
+
+                        // 200x350 컨테이너에 맞춰 리사이즈 (비율 유지)
+                        const maxWidth = 200;
+                        const maxHeight = 350;
+                        let width = tempImg.width;
+                        let height = tempImg.height;
+
+                        // 비율 계산
+                        const widthRatio = maxWidth / width;
+                        const heightRatio = maxHeight / height;
+                        const ratio = Math.min(widthRatio, heightRatio);
+
+                        // 리사이즈된 크기 적용
+                        width = width * ratio;
+                        height = height * ratio;
+
+                        canvas.width = width;
+                        canvas.height = height;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(tempImg, 0, 0);
+                        ctx.drawImage(tempImg, 0, 0, width, height);
 
                         // base64로 변환하여 저장
                         const base64Data = canvas.toDataURL('image/png');
