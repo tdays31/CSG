@@ -444,7 +444,7 @@
 
         .special-notes-grid {
             display: grid;
-            grid-template-columns: 1fr 150px;
+            grid-template-columns: 1fr 200px;
             gap: 20px;
             align-items: start;
         }
@@ -456,7 +456,7 @@
         .image-selector {
             background: #000;
             border-radius: var(--input-radius);
-            width: 150px;
+            width: 200px;
             height: 350px;
             display: flex;
             flex-direction: column;
@@ -469,6 +469,10 @@
 
         .image-selector:hover {
             opacity: 0.8;
+        }
+
+        .image-selector.has-image {
+            background: transparent;
         }
 
         .image-selector img {
