@@ -39,14 +39,14 @@
             font-size: var(--font-size);
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             min-height: 100vh;
-            min-width: 1240px;
+            min-width: 1490px;
             padding: 40px 20px;
             color: var(--text-color);
             overflow-x: auto;
         }
 
         .container {
-            width: 1200px;
+            width: 1450px;
             margin: 0 auto;
             position: relative;
         }
@@ -259,12 +259,14 @@
             font-size: 23px;
             font-weight: 700;
             text-align: center;
+            line-height: 1.6;
+            padding: 8px 4px;
         }
 
         /* 메인 레이아웃 그리드 */
         .main-grid {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 300px 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
@@ -273,8 +275,8 @@
         .image-upload-area {
             background: linear-gradient(135deg, var(--image-bg-start) 0%, var(--image-bg-end) 100%);
             border-radius: var(--input-radius);
-            width: 400px;
-            height: 400px;
+            width: 300px;
+            height: 300px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -337,16 +339,17 @@
             font-size: 18px;
             color: var(--text-color);
             font-weight: 600;
-            padding: 4px 4px;
-            height: 30px;
+            padding: 6px 4px;
+            height: 32px;
+            line-height: 1.4;
         }
 
         .stacked-inputs .input-small {
             font-size: 13px;
             color: #999999 !important;
-            padding: 4px 4px;
-            height: 24px;
-            line-height: 16px;
+            padding: 5px 4px;
+            height: 26px;
+            line-height: 1.3;
         }
 
         /* 나이 입력 3칸 그리드 */
@@ -354,13 +357,14 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
-            height: 24px;
+            height: 26px;
         }
 
         .age-inputs-grid input {
-            height: 24px;
+            height: 26px;
             font-size: 13px;
-            line-height: 16px;
+            line-height: 1.3;
+            padding: 5px 4px;
         }
 
         /* 출생 하단 상세 정보 (혈액형/입사일/부서) */
@@ -369,15 +373,15 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-top: 5px;
-            height: 24px;
+            height: 26px;
         }
 
         .birth-detail-row input,
         .birth-detail-row select {
             font-size: 12px;
-            padding: 4px 4px;
-            height: 24px;
-            line-height: 16px;
+            padding: 5px 4px;
+            height: 26px;
+            line-height: 1.3;
         }
 
         /* 인풋 스타일 */
@@ -406,6 +410,7 @@
             color: var(--text-color);
             outline: none;
             transition: border-color 0.2s ease;
+            line-height: 1.5;
         }
 
         input:hover,
@@ -421,7 +426,8 @@
             min-height: 100px;
             resize: vertical;
             border: 1px dotted transparent;
-            padding: 8px;
+            padding: 10px 8px;
+            line-height: 1.6;
         }
 
         textarea:hover,
@@ -1017,7 +1023,7 @@
             const container = document.querySelector('.container');
             const formContainer = document.getElementById('form-container');
             const originalWidth = container.offsetWidth;
-            const minWidth = 1200;
+            const minWidth = 1450;
 
             // 배경 포함을 위해 container에 임시 스타일 적용
             const originalBackground = container.style.background;
@@ -1035,6 +1041,7 @@
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
+                useCORS: true,
                 width: Math.max(originalWidth, minWidth),
                 ignoreElements: function(element) {
                     return element.classList.contains('no-export');
@@ -1063,6 +1070,286 @@
                 panel.classList.remove('open');
             }
         });
+
+        // ========== localStorage 자동 저장/복원 기능 ==========
+        const STORAGE_KEY = 'formDesignerData';
+        const STICKERS_KEY = 'formDesignerStickers';
+
+        // 모든 입력 필드 ID 목록
+        const inputFields = [
+            'topInput', 'nameKor', 'nameEng', 'koreanAge', 'birthMonth', 'birthDay',
+            'bloodType', 'joinDate', 'department', 'abilityName', 'abilityDesc',
+            'specialNotes', 'owner1', 'owner2', 'owner3', 'owner4'
+        ];
+
+        // 디자인 설정 필드 목록
+        const designFields = [
+            'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
+            'textColorBase', 'subTextColor', 'stickerBg', 'stickerText',
+            'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
+            'bgImageUrl', 'fontUrl', 'fontName'
+        ];
+
+        // 체크박스 필드 목록
+        const checkboxFields = [
+            'birthInputsToggle', 'birthUnknownToggle', 'ownerSectionToggle'
+        ];
+
+        // 데이터 저장
+        function saveToLocalStorage() {
+            const data = {};
+
+            // 일반 입력 필드 저장
+            inputFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    data[id] = element.value;
+                }
+            });
+
+            // 디자인 설정 저장
+            designFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    data[id] = element.value;
+                }
+            });
+
+            // 체크박스 저장
+            checkboxFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    data[id] = element.checked;
+                }
+            });
+
+            // 계산된 출생 정보 저장
+            const birthInfoCalculated = document.getElementById('birthInfoCalculated');
+            if (birthInfoCalculated) {
+                data['birthInfoCalculated'] = birthInfoCalculated.value;
+            }
+
+            // 이미지 저장 (base64)
+            const previewImage = document.getElementById('previewImage');
+            if (previewImage && previewImage.src && previewImage.style.display === 'block') {
+                data['uploadedImage'] = previewImage.src;
+            }
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // 성격란 저장
+        function saveStickersToLocalStorage() {
+            const stickersData = labelStickers.map(sticker => ({
+                text: sticker.textContent.replace('🎨×', '').trim(),
+                backgroundColor: sticker.style.backgroundColor || getComputedStyle(sticker).backgroundColor
+            }));
+            localStorage.setItem(STICKERS_KEY, JSON.stringify(stickersData));
+        }
+
+        // 데이터 복원
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (!savedData) return;
+
+            try {
+                const data = JSON.parse(savedData);
+
+                // 일반 입력 필드 복원
+                inputFields.forEach(id => {
+                    if (data[id] !== undefined) {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.value = data[id];
+                        }
+                    }
+                });
+
+                // 디자인 설정 복원
+                designFields.forEach(id => {
+                    if (data[id] !== undefined) {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.value = data[id];
+
+                            // 해당 설정 적용
+                            if (id === 'primaryColor') updateStyle('--primary-color', data[id]);
+                            else if (id === 'secondaryColor') updateStyle('--secondary-color', data[id]);
+                            else if (id === 'inputBgBase' || id === 'inputBgAlpha') updateInputBgBase();
+                            else if (id === 'textColorBase') updateTextColors();
+                            else if (id === 'subTextColor') updateStyle('--label-color', data[id]);
+                            else if (id === 'stickerBg') updateStyle('--sticker-bg', data[id]);
+                            else if (id === 'stickerText') updateStyle('--sticker-text', data[id]);
+                            else if (id === 'imageBgStart') updateStyle('--image-bg-start', data[id]);
+                            else if (id === 'imageBgEnd') updateStyle('--image-bg-end', data[id]);
+                            else if (id === 'borderRadius') {
+                                updateStyle('--border-radius', data[id] + 'px');
+                                document.getElementById('radiusValue').textContent = data[id];
+                            }
+                            else if (id === 'inputRadius') {
+                                updateStyle('--input-radius', data[id] + 'px');
+                                document.getElementById('inputRadiusValue').textContent = data[id];
+                            }
+                            else if (id === 'bgImageUrl') updateBackgroundImage(data[id]);
+                            else if (id === 'fontUrl') updateFontUrl(data[id]);
+                            else if (id === 'fontName') updateFontFamily(data[id]);
+                        }
+                    }
+                });
+
+                // 체크박스 복원
+                checkboxFields.forEach(id => {
+                    if (data[id] !== undefined) {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.checked = data[id];
+
+                            // 해당 토글 함수 실행
+                            if (id === 'birthInputsToggle') toggleBirthInputs();
+                            else if (id === 'birthUnknownToggle') toggleBirthUnknown();
+                            else if (id === 'ownerSectionToggle') toggleOwnerSection();
+                        }
+                    }
+                });
+
+                // 계산된 출생 정보 복원
+                if (data['birthInfoCalculated']) {
+                    const birthInfoCalculated = document.getElementById('birthInfoCalculated');
+                    if (birthInfoCalculated) {
+                        birthInfoCalculated.value = data['birthInfoCalculated'];
+                    }
+                }
+
+                // 이미지 복원
+                if (data['uploadedImage']) {
+                    const previewImage = document.getElementById('previewImage');
+                    const placeholder = document.getElementById('uploadPlaceholder');
+                    if (previewImage && placeholder) {
+                        previewImage.src = data['uploadedImage'];
+                        previewImage.style.display = 'block';
+                        placeholder.style.display = 'none';
+                    }
+                }
+
+                // 알파값 표시 업데이트
+                if (data['inputBgAlpha']) {
+                    document.getElementById('alphaValue').textContent = data['inputBgAlpha'];
+                }
+
+            } catch (e) {
+                console.error('데이터 복원 실패:', e);
+            }
+        }
+
+        // 성격란 복원
+        function loadStickersFromLocalStorage() {
+            const savedStickers = localStorage.getItem(STICKERS_KEY);
+            if (!savedStickers) return;
+
+            try {
+                const stickersData = JSON.parse(savedStickers);
+                stickersData.forEach(stickerData => {
+                    addLabelSticker();
+                    const lastSticker = labelStickers[labelStickers.length - 1];
+                    // 텍스트 노드만 업데이트 (버튼 제외)
+                    const textNode = Array.from(lastSticker.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+                    if (textNode) {
+                        textNode.textContent = stickerData.text;
+                    } else {
+                        lastSticker.firstChild.textContent = stickerData.text;
+                    }
+                    if (stickerData.backgroundColor) {
+                        lastSticker.style.backgroundColor = stickerData.backgroundColor;
+                    }
+                });
+                adjustLabelWidths();
+            } catch (e) {
+                console.error('성격란 복원 실패:', e);
+            }
+        }
+
+        // 입력 필드에 자동 저장 이벤트 리스너 추가
+        function setupAutoSave() {
+            // 일반 입력 필드
+            inputFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', saveToLocalStorage);
+                    element.addEventListener('change', saveToLocalStorage);
+                }
+            });
+
+            // 디자인 설정 필드
+            designFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', saveToLocalStorage);
+                    element.addEventListener('change', saveToLocalStorage);
+                }
+            });
+
+            // 체크박스 필드
+            checkboxFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', saveToLocalStorage);
+                }
+            });
+
+            // 이미지 업로드 시 저장 (기존 previewImage 함수 수정 필요)
+            const imageUpload = document.getElementById('imageUpload');
+            if (imageUpload) {
+                const originalPreviewImage = previewImage;
+                window.previewImage = function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewImg = document.getElementById('previewImage');
+                            const placeholder = document.getElementById('uploadPlaceholder');
+                            previewImg.src = e.target.result;
+                            previewImg.style.display = 'block';
+                            placeholder.style.display = 'none';
+                            // 저장
+                            saveToLocalStorage();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+            }
+        }
+
+        // 성격란 추가/삭제 시 저장하도록 기존 함수 수정
+        const originalAddLabelSticker = addLabelSticker;
+        window.addLabelSticker = function() {
+            originalAddLabelSticker();
+            // 성격란에 input 이벤트 리스너 추가
+            const lastSticker = labelStickers[labelStickers.length - 1];
+            if (lastSticker) {
+                lastSticker.addEventListener('input', saveStickersToLocalStorage);
+                lastSticker.addEventListener('blur', saveStickersToLocalStorage);
+            }
+        };
+
+        const originalRemoveLabelSticker = removeLabelSticker;
+        window.removeLabelSticker = function(sticker) {
+            originalRemoveLabelSticker(sticker);
+            saveStickersToLocalStorage();
+        };
+
+        // 페이지 로드 시 데이터 복원
+        window.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            loadStickersFromLocalStorage();
+            setupAutoSave();
+        });
+
+        // 데이터 초기화 함수 (필요시 콘솔에서 호출)
+        window.clearFormData = function() {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(STICKERS_KEY);
+            location.reload();
+        };
     </script>
 </body>
 </html>
