@@ -464,7 +464,12 @@
             justify-content: center;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+        }
+
+        .image-selector .image-selector-placeholder,
+        .image-selector img {
+            border-radius: var(--input-radius);
         }
 
         .image-selector:hover {
