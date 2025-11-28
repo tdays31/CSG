@@ -1170,12 +1170,21 @@
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
-                allowTaint: true,
+                allowTaint: false,
                 letterRendering: true,
                 width: Math.max(originalWidth, minWidth),
                 windowWidth: Math.max(originalWidth, minWidth),
                 ignoreElements: function(element) {
                     return element.classList.contains('no-export');
+                },
+                onclone: function(clonedDoc) {
+                    // 클론된 문서의 모든 이미지에 crossOrigin 설정
+                    const images = clonedDoc.querySelectorAll('img');
+                    images.forEach(img => {
+                        if (img.src) {
+                            img.crossOrigin = 'anonymous';
+                        }
+                    });
                 }
             }).then(canvas => {
                 // 원래 스타일로 복원
@@ -1224,6 +1233,7 @@
 
                 item.addEventListener('click', function(e) {
                     e.stopPropagation();
+                    selectedImage.crossOrigin = 'anonymous';
                     selectedImage.src = `Image/${imageName}`;
                     imageSelector.classList.add('has-image');
                     imageDropdown.classList.remove('open');
@@ -1438,6 +1448,7 @@
                     const selectedImage = document.getElementById('selectedImage');
                     const imageSelector = document.getElementById('imageSelector');
                     if (selectedImage && imageSelector) {
+                        selectedImage.crossOrigin = 'anonymous';
                         selectedImage.src = data['selectedSpecialImage'];
                         imageSelector.classList.add('has-image');
                     }
