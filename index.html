@@ -5,6 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Form Designer</title>
     <style>
+        /* 폰트 정의 */
+        @font-face {
+            font-family: 'MaruBuri';
+            src: url('font/MaruBuri-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'MaruBuri';
+            src: url('font/MaruBuri-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'NanumBarunGothic';
+            src: url('font/NanumBarunGothic.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'NanumBarunGothic';
+            src: url('font/NanumBarunGothicBold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'NanumGothic';
+            src: url('font/NanumGothic.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'NanumGothic';
+            src: url('font/NanumGothicBold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'NanumMyeongjo';
+            src: url('font/NanumMyeongjo.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'NanumMyeongjo';
+            src: url('font/NanumMyeongjoBold.ttf') format('truetype');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'NanumSquare';
+            src: url('font/NanumSquareR.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'NanumSquare';
+            src: url('font/NanumSquareB.ttf') format('truetype');
+            font-weight: 700;
+        }
+
         :root {
             /* 유저 커스터마이징 가능한 CSS 변수 */
             --primary-color: #667eea;
@@ -694,13 +746,15 @@
         </div>
 
         <div class="control-group">
-            <label>폰트 URL (Google Fonts 등)</label>
-            <input type="text" id="fontUrl" placeholder="https://fonts.googleapis.com/..." onchange="updateFontUrl(this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>폰트 이름</label>
-            <input type="text" id="fontName" placeholder="예: 'Noto Sans KR'" onchange="updateFontFamily(this.value)">
+            <label>폰트 선택</label>
+            <select id="fontSelector" onchange="changeFontFamily(this.value)">
+                <option value="default">기본 시스템 폰트</option>
+                <option value="MaruBuri">마루 부리</option>
+                <option value="NanumBarunGothic">나눔바른고딕</option>
+                <option value="NanumGothic">나눔고딕</option>
+                <option value="NanumMyeongjo">나눔명조</option>
+                <option value="NanumSquare">나눔스퀘어</option>
+            </select>
         </div>
 
         <div class="control-group">
@@ -884,27 +938,12 @@
             updateStyle('--text-color', baseColor);
         }
 
-        // 폰트 URL 로드
-        function updateFontUrl(url) {
-            // 기존 폰트 링크 제거
-            const existingLink = document.getElementById('custom-font-link');
-            if (existingLink) {
-                existingLink.remove();
-            }
-
-            if (url) {
-                const link = document.createElement('link');
-                link.id = 'custom-font-link';
-                link.rel = 'stylesheet';
-                link.href = url;
-                document.head.appendChild(link);
-            }
-        }
-
-        // 폰트 이름 적용
-        function updateFontFamily(fontName) {
-            if (fontName) {
-                updateStyle('--font-family', `${fontName}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
+        // 폰트 변경
+        function changeFontFamily(fontValue) {
+            if (fontValue === 'default') {
+                updateStyle('--font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif');
+            } else {
+                updateStyle('--font-family', `'${fontValue}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
             }
         }
 
@@ -1323,7 +1362,7 @@
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'stickerBg', 'stickerText',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
-            'bgImageUrl', 'fontUrl', 'fontName'
+            'bgImageUrl', 'fontSelector'
         ];
 
         // 체크박스 필드 목록
@@ -1434,8 +1473,7 @@
                                 document.getElementById('inputRadiusValue').textContent = data[id];
                             }
                             else if (id === 'bgImageUrl') updateBackgroundImage(data[id]);
-                            else if (id === 'fontUrl') updateFontUrl(data[id]);
-                            else if (id === 'fontName') updateFontFamily(data[id]);
+                            else if (id === 'fontSelector') changeFontFamily(data[id]);
                         }
                     }
                 });
