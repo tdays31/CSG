@@ -262,7 +262,8 @@
             font-weight: 700;
             text-align: center;
             line-height: 1.6;
-            padding: 8px 4px;
+            padding: 12px 8px;
+            overflow: visible;
         }
 
         /* 메인 레이아웃 그리드 */
@@ -341,17 +342,17 @@
             font-size: 18px;
             color: var(--text-color);
             font-weight: 600;
-            padding: 6px 4px;
-            height: 32px;
-            line-height: 1.4;
+            padding: 8px 4px;
+            line-height: 1.5;
+            overflow: visible;
         }
 
         .stacked-inputs .input-small {
             font-size: 13px;
             color: #999999 !important;
-            padding: 5px 4px;
-            height: 26px;
-            line-height: 1.3;
+            padding: 6px 4px;
+            line-height: 1.4;
+            overflow: visible;
         }
 
         /* 나이 입력 3칸 그리드 */
@@ -359,14 +360,13 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
-            height: 26px;
         }
 
         .age-inputs-grid input {
-            height: 26px;
             font-size: 13px;
-            line-height: 1.3;
-            padding: 5px 4px;
+            line-height: 1.4;
+            padding: 6px 4px;
+            overflow: visible;
         }
 
         /* 출생 하단 상세 정보 (혈액형/입사일/부서) */
@@ -375,15 +375,14 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-top: 5px;
-            height: 26px;
         }
 
         .birth-detail-row input,
         .birth-detail-row select {
             font-size: 12px;
-            padding: 5px 4px;
-            height: 26px;
-            line-height: 1.3;
+            padding: 6px 4px;
+            line-height: 1.4;
+            overflow: visible;
         }
 
         /* 인풋 스타일 */
@@ -413,6 +412,7 @@
             outline: none;
             transition: border-color 0.2s ease;
             line-height: 1.5;
+            overflow: visible;
         }
 
         input:hover,
@@ -1030,21 +1030,34 @@
             // 배경 포함을 위해 container에 임시 스타일 적용
             const originalBackground = container.style.background;
             const originalPadding = container.style.padding;
+            const originalFormPadding = formContainer.style.padding;
 
             container.style.background = getComputedStyle(document.body).background;
-            container.style.padding = '40px 20px';
+            container.style.padding = '60px 20px';
+            formContainer.style.padding = '60px 40px';
 
             // 최소 너비 보장
             if (originalWidth < minWidth) {
                 container.style.width = minWidth + 'px';
             }
 
+            // 모든 input의 overflow를 visible로 강제
+            const allInputs = container.querySelectorAll('input, select, textarea');
+            const originalOverflows = [];
+            allInputs.forEach((input, index) => {
+                originalOverflows[index] = input.style.overflow;
+                input.style.overflow = 'visible';
+            });
+
             html2canvas(container, {
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
+                allowTaint: true,
+                letterRendering: true,
                 width: Math.max(originalWidth, minWidth),
+                windowWidth: Math.max(originalWidth, minWidth),
                 ignoreElements: function(element) {
                     return element.classList.contains('no-export');
                 }
@@ -1052,7 +1065,13 @@
                 // 원래 스타일로 복원
                 container.style.background = originalBackground;
                 container.style.padding = originalPadding;
+                formContainer.style.padding = originalFormPadding;
                 container.style.width = '';
+
+                // overflow 복원
+                allInputs.forEach((input, index) => {
+                    input.style.overflow = originalOverflows[index];
+                });
 
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
