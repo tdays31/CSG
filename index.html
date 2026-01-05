@@ -806,7 +806,6 @@
                 <div class="special-notes-grid">
                     <textarea id="specialNotes" placeholder="주변인이 쉽게 알 수 있는 설정만을 간략히 요약하여 작성하시는 것을 권장드립니다."></textarea>
                     <div class="image-selector" id="imageSelector">
-                        <img id="selectedImage" alt="Selected">
                         <div class="image-selector-placeholder no-export">
                             이미지 선택
                         </div>
@@ -1217,7 +1216,6 @@
         function initImageSelector() {
             const imageSelector = document.getElementById('imageSelector');
             const imageDropdown = document.getElementById('imageDropdown');
-            const selectedImage = document.getElementById('selectedImage');
 
             // 이미지 목록 생성
             imageList.forEach(imageName => {
@@ -1264,7 +1262,9 @@
 
                         // base64로 변환하여 저장
                         const base64Data = canvas.toDataURL('image/png');
-                        selectedImage.src = base64Data;
+                        imageSelector.style.backgroundImage = `url(${base64Data})`;
+                        imageSelector.style.backgroundSize = 'cover';
+                        imageSelector.style.backgroundPosition = 'center';
                         imageSelector.classList.add('has-image');
                         imageDropdown.classList.remove('open');
                         saveToLocalStorage(); // 자동 저장
@@ -1372,10 +1372,16 @@
             }
 
             // 선택된 이미지 저장
-            const selectedImage = document.getElementById('selectedImage');
             const imageSelector = document.getElementById('imageSelector');
-            if (selectedImage && selectedImage.src && imageSelector.classList.contains('has-image')) {
-                data['selectedSpecialImage'] = selectedImage.src;
+            if (imageSelector && imageSelector.classList.contains('has-image')) {
+                const bgImage = imageSelector.style.backgroundImage;
+                if (bgImage) {
+                    // url("...") 형식에서 URL만 추출
+                    const match = bgImage.match(/url\(['"]?(.+?)['"]?\)/);
+                    if (match) {
+                        data['selectedSpecialImage'] = match[1];
+                    }
+                }
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -1481,10 +1487,11 @@
 
                 // 선택된 이미지 복원 (base64 데이터)
                 if (data['selectedSpecialImage']) {
-                    const selectedImage = document.getElementById('selectedImage');
                     const imageSelector = document.getElementById('imageSelector');
-                    if (selectedImage && imageSelector) {
-                        selectedImage.src = data['selectedSpecialImage'];
+                    if (imageSelector) {
+                        imageSelector.style.backgroundImage = `url(${data['selectedSpecialImage']})`;
+                        imageSelector.style.backgroundSize = 'cover';
+                        imageSelector.style.backgroundPosition = 'center';
                         imageSelector.classList.add('has-image');
                     }
                 }
