@@ -5,6 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Form Designer</title>
     <style>
+        /* 로컬 폰트 선언 */
+        @font-face {
+            font-family: 'MaruBuri-Regular';
+            src: url('font/MaruBuri-Regular.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'MaruBuri-Light';
+            src: url('font/MaruBuri-Light.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'MaruBuri-Bold';
+            src: url('font/MaruBuri-Bold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'MaruBuri-SemiBold';
+            src: url('font/MaruBuri-SemiBold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'MaruBuri-ExtraLight';
+            src: url('font/MaruBuri-ExtraLight.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumBarunGothic';
+            src: url('font/NanumBarunGothic.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumBarunGothicBold';
+            src: url('font/NanumBarunGothicBold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumBarunGothicLight';
+            src: url('font/NanumBarunGothicLight.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumBarunGothicUltraLight';
+            src: url('font/NanumBarunGothicUltraLight.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumGothic';
+            src: url('font/NanumGothic.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumGothicBold';
+            src: url('font/NanumGothicBold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumGothicExtraBold';
+            src: url('font/NanumGothicExtraBold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumGothicLight';
+            src: url('font/NanumGothicLight.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumMyeongjo';
+            src: url('font/NanumMyeongjo.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumMyeongjoBold';
+            src: url('font/NanumMyeongjoBold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumMyeongjoExtraBold';
+            src: url('font/NanumMyeongjoExtraBold.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquareR';
+            src: url('font/NanumSquareR.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquareL';
+            src: url('font/NanumSquareL.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquareB';
+            src: url('font/NanumSquareB.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquareEB';
+            src: url('font/NanumSquareEB.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquare_acR';
+            src: url('font/NanumSquare_acR.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquare_acL';
+            src: url('font/NanumSquare_acL.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquare_acB';
+            src: url('font/NanumSquare_acB.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'NanumSquare_acEB';
+            src: url('font/NanumSquare_acEB.ttf') format('truetype');
+        }
+
         :root {
             /* 유저 커스터마이징 가능한 CSS 변수 */
             --primary-color: #667eea;
@@ -694,13 +792,39 @@
         </div>
 
         <div class="control-group">
-            <label>폰트 URL (Google Fonts 등)</label>
-            <input type="text" id="fontUrl" placeholder="https://fonts.googleapis.com/..." onchange="updateFontUrl(this.value)">
+            <label>폰트 선택</label>
+            <select id="fontSelect" onchange="updateFontFromSelect(this.value)">
+                <option value="">기본 폰트</option>
+                <option value="MaruBuri-Regular">MaruBuri Regular</option>
+                <option value="MaruBuri-Light">MaruBuri Light</option>
+                <option value="MaruBuri-Bold">MaruBuri Bold</option>
+                <option value="MaruBuri-SemiBold">MaruBuri SemiBold</option>
+                <option value="MaruBuri-ExtraLight">MaruBuri ExtraLight</option>
+                <option value="NanumBarunGothic">나눔바른고딕</option>
+                <option value="NanumBarunGothicBold">나눔바른고딕 Bold</option>
+                <option value="NanumBarunGothicLight">나눔바른고딕 Light</option>
+                <option value="NanumBarunGothicUltraLight">나눔바른고딕 UltraLight</option>
+                <option value="NanumGothic">나눔고딕</option>
+                <option value="NanumGothicBold">나눔고딕 Bold</option>
+                <option value="NanumGothicExtraBold">나눔고딕 ExtraBold</option>
+                <option value="NanumGothicLight">나눔고딕 Light</option>
+                <option value="NanumMyeongjo">나눔명조</option>
+                <option value="NanumMyeongjoBold">나눔명조 Bold</option>
+                <option value="NanumMyeongjoExtraBold">나눔명조 ExtraBold</option>
+                <option value="NanumSquareR">나눔스퀘어 Regular</option>
+                <option value="NanumSquareL">나눔스퀘어 Light</option>
+                <option value="NanumSquareB">나눔스퀘어 Bold</option>
+                <option value="NanumSquareEB">나눔스퀘어 ExtraBold</option>
+                <option value="NanumSquare_acR">나눔스퀘어 AC Regular</option>
+                <option value="NanumSquare_acL">나눔스퀘어 AC Light</option>
+                <option value="NanumSquare_acB">나눔스퀘어 AC Bold</option>
+                <option value="NanumSquare_acEB">나눔스퀘어 AC ExtraBold</option>
+            </select>
         </div>
 
         <div class="control-group">
-            <label>폰트 이름</label>
-            <input type="text" id="fontName" placeholder="예: 'Noto Sans KR'" onchange="updateFontFamily(this.value)">
+            <label>Input 텍스트 크기: <span id="inputFontSizeValue">14</span>px</label>
+            <input type="range" min="10" max="24" value="14" step="1" id="inputFontSize" oninput="updateInputFontSize(this.value)">
         </div>
 
         <div class="control-group">
@@ -860,28 +984,34 @@
             updateStyle('--text-color', baseColor);
         }
 
-        // 폰트 URL 로드
-        function updateFontUrl(url) {
-            // 기존 폰트 링크 제거
-            const existingLink = document.getElementById('custom-font-link');
-            if (existingLink) {
-                existingLink.remove();
-            }
-
-            if (url) {
-                const link = document.createElement('link');
-                link.id = 'custom-font-link';
-                link.rel = 'stylesheet';
-                link.href = url;
-                document.head.appendChild(link);
-            }
-        }
-
-        // 폰트 이름 적용
-        function updateFontFamily(fontName) {
+        // 폰트 선택 적용
+        function updateFontFromSelect(fontName) {
             if (fontName) {
                 updateStyle('--font-family', `${fontName}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
+            } else {
+                updateStyle('--font-family', `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
             }
+            saveToLocalStorage();
+        }
+
+        // Input 텍스트 크기 업데이트
+        function updateInputFontSize(size) {
+            document.getElementById('inputFontSizeValue').textContent = size;
+            // 크기가 작거나 큰 input을 제외한 일반 input, textarea에만 적용
+            const style = document.createElement('style');
+            style.id = 'input-font-size-style';
+            const existingStyle = document.getElementById('input-font-size-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            style.textContent = `
+                .form-card input[type="text"]:not([style*="font-size"]):not(.korean-age):not(.month-input):not(.day-input):not(.blood-type):not(.hire-date):not(.department),
+                .form-card textarea {
+                    font-size: ${size}px !important;
+                }
+            `;
+            document.head.appendChild(style);
+            saveToLocalStorage();
         }
 
         // 이미지 미리보기
@@ -1292,7 +1422,7 @@
         const inputFields = [
             'topInput', 'nameKor', 'nameEng', 'koreanAge', 'birthMonth', 'birthDay',
             'bloodType', 'joinDate', 'department', 'abilityName', 'abilityDesc',
-            'specialNotes', 'owner1', 'owner2', 'owner3', 'owner4'
+            'specialNotes', 'owner4'
         ];
 
         // 디자인 설정 필드 목록
@@ -1300,7 +1430,7 @@
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'stickerBg', 'stickerText',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
-            'bgImageUrl', 'fontUrl', 'fontName'
+            'bgImageUrl', 'fontSelect', 'inputFontSize'
         ];
 
         // 체크박스 필드 목록
@@ -1417,8 +1547,11 @@
                                 document.getElementById('inputRadiusValue').textContent = data[id];
                             }
                             else if (id === 'bgImageUrl') updateBackgroundImage(data[id]);
-                            else if (id === 'fontUrl') updateFontUrl(data[id]);
-                            else if (id === 'fontName') updateFontFamily(data[id]);
+                            else if (id === 'fontSelect') updateFontFromSelect(data[id]);
+                            else if (id === 'inputFontSize') {
+                                updateInputFontSize(data[id]);
+                                document.getElementById('inputFontSize').value = data[id];
+                            }
                         }
                     }
                 });
