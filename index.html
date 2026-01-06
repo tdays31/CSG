@@ -1247,18 +1247,22 @@
 
         // 이미지 저장 기능
         document.getElementById('saveBtn').addEventListener('click', function() {
+            const body = document.body;
             const container = document.querySelector('.container');
             const formContainer = document.getElementById('form-container');
             const originalWidth = container.offsetWidth;
             const minWidth = 1450;
 
-            // 배경 포함을 위해 container에 임시 스타일 적용
+            // 배경 포함을 위해 임시 스타일 적용
             const originalBackground = container.style.background;
             const originalPadding = container.style.padding;
             const originalFormPadding = formContainer.style.padding;
+            const originalBodyPadding = body.style.padding;
 
-            container.style.background = getComputedStyle(document.body).background;
-            container.style.padding = '60px 20px';
+            // 배경이 더 보이도록 padding 증가 (7:3 비율 고려)
+            body.style.padding = '120px 80px';
+            container.style.background = 'transparent';
+            container.style.padding = '0';
             formContainer.style.padding = '60px 40px';
 
             // 최소 너비 보장
@@ -1274,15 +1278,13 @@
                 input.style.overflow = 'visible';
             });
 
-            html2canvas(container, {
+            html2canvas(body, {
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
                 allowTaint: false,
                 letterRendering: true,
-                width: Math.max(originalWidth, minWidth),
-                windowWidth: Math.max(originalWidth, minWidth),
                 ignoreElements: function(element) {
                     return element.classList.contains('no-export');
                 },
@@ -1300,6 +1302,7 @@
                 container.style.background = originalBackground;
                 container.style.padding = originalPadding;
                 formContainer.style.padding = originalFormPadding;
+                body.style.padding = originalBodyPadding;
                 container.style.width = '';
 
                 // overflow 복원
