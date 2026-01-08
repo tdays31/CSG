@@ -912,6 +912,9 @@
                                         <option value="지옥">지옥</option>
                                         <option value="아귀">아귀</option>
                                         <option value="축생">축생</option>
+                                        <option value="차원천명">차원천명</option>
+                                        <option value="차원사">차원사</option>
+                                        <option value="차원상">차원상</option>
                                     </select>
                                 </div>
                             </div>
@@ -1036,7 +1039,7 @@
             }
         }
 
-        // 출생 정보 자동 계산 (2036년 2월 기준)
+        // 출생 정보 자동 계산 (2036년 2월 1일 기준)
         function calculateBirthInfo() {
             const ageInput = document.getElementById('koreanAge').value;
             const monthInput = document.getElementById('birthMonth').value;
@@ -1054,11 +1057,34 @@
                 return;
             }
 
-            // 2036년 2월 기준
+            // 2036년 2월 1일 기준
             const referenceYear = 2036;
+            const referenceMonth = 2;
+            const referenceDay = 1;
 
-            // 입력한 나이로 출생년도 계산
-            const birthYear = referenceYear - currentAge;
+            // 입력한 나이로 출생년도 계산 (기본값)
+            let birthYear = referenceYear - currentAge;
+
+            // 생일이 기준일(2월 1일) 이후면 아직 생일이 안 지났으므로 -1년
+            if (monthInput) {
+                const month = parseInt(monthInput);
+                if (!isNaN(month) && month >= 1 && month <= 12) {
+                    if (month > referenceMonth) {
+                        // 3월~12월생: 아직 생일 안 지남
+                        birthYear -= 1;
+                    } else if (month === referenceMonth && dayInput) {
+                        // 2월생인 경우 일자 확인
+                        const day = parseInt(dayInput);
+                        if (!isNaN(day) && day >= 1 && day <= 31) {
+                            if (day > referenceDay) {
+                                // 2월 2일 이후: 아직 생일 안 지남
+                                birthYear -= 1;
+                            }
+                        }
+                    }
+                    // 1월생 또는 2월 1일생: 이미 생일 지남, 그대로
+                }
+            }
 
             // 입력한 나이 그대로 사용
             const displayAge = currentAge;
