@@ -1327,12 +1327,38 @@
                         }
                     });
 
-                    // textarea 줄넘김 처리
+                    // textarea를 div로 변환하여 줄바꿈 제대로 처리
                     const textareas = clonedDoc.querySelectorAll('textarea');
-                    textareas.forEach(textarea => {
-                        textarea.style.whiteSpace = 'pre-wrap';
-                        textarea.style.wordWrap = 'break-word';
-                        textarea.style.overflowWrap = 'break-word';
+                    textareas.forEach((textarea, index) => {
+                        // 원본 textarea의 값 가져오기
+                        const originalTextarea = document.querySelectorAll('textarea')[index];
+                        const value = originalTextarea.value;
+
+                        // div 생성
+                        const div = clonedDoc.createElement('div');
+                        div.textContent = value;
+
+                        // 스타일 복사
+                        const computedStyle = window.getComputedStyle(originalTextarea);
+                        div.style.width = computedStyle.width;
+                        div.style.minHeight = computedStyle.minHeight;
+                        div.style.padding = computedStyle.padding;
+                        div.style.fontSize = computedStyle.fontSize;
+                        div.style.fontFamily = computedStyle.fontFamily;
+                        div.style.color = computedStyle.color;
+                        div.style.lineHeight = computedStyle.lineHeight;
+                        div.style.border = computedStyle.border;
+                        div.style.borderRadius = computedStyle.borderRadius;
+                        div.style.backgroundColor = computedStyle.backgroundColor;
+
+                        // 줄바꿈 설정
+                        div.style.whiteSpace = 'pre-wrap';
+                        div.style.wordWrap = 'break-word';
+                        div.style.overflowWrap = 'break-word';
+                        div.style.overflow = 'visible';
+
+                        // textarea를 div로 교체
+                        textarea.parentNode.replaceChild(div, textarea);
                     });
 
                     // backdrop-filter 블러 효과를 일반 배경으로 대체
