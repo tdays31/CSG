@@ -1386,9 +1386,19 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
+                // 0.5배 크기로 축소
+                const scaledCanvas = document.createElement('canvas');
+                const scaledWidth = canvas.width * 0.5;
+                const scaledHeight = canvas.height * 0.5;
+                scaledCanvas.width = scaledWidth;
+                scaledCanvas.height = scaledHeight;
+
+                const ctx = scaledCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
+
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
-                link.href = canvas.toDataURL();
+                link.href = scaledCanvas.toDataURL();
                 link.click();
             });
         });
