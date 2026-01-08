@@ -708,11 +708,11 @@
     </style>
 </head>
 <body>
-    <button class="customize-btn" onclick="toggleCustomizePanel()">
+    <button class="customize-btn no-export" onclick="toggleCustomizePanel()">
         🎨 디자인 커스터마이징
     </button>
 
-    <div class="customize-panel" id="customizePanel">
+    <div class="customize-panel no-export" id="customizePanel">
         <h3>디자인 설정</h3>
 
         <div class="control-group">
@@ -1289,8 +1289,8 @@
             const originalFormPadding = formContainer.style.padding;
             const originalBodyPadding = body.style.padding;
 
-            // 배경이 더 보이도록 padding 증가 (7:3 비율 고려)
-            body.style.padding = '120px 80px';
+            // 배경이 더 보이도록 padding 증가 (한마디 위쪽 잘림 방지)
+            body.style.padding = '200px 80px';
             container.style.background = 'transparent';
             container.style.padding = '0';
             formContainer.style.padding = '60px 40px';
@@ -1326,6 +1326,26 @@
                             img.crossOrigin = 'anonymous';
                         }
                     });
+
+                    // textarea 줄넘김 처리
+                    const textareas = clonedDoc.querySelectorAll('textarea');
+                    textareas.forEach(textarea => {
+                        textarea.style.whiteSpace = 'pre-wrap';
+                        textarea.style.wordWrap = 'break-word';
+                        textarea.style.overflowWrap = 'break-word';
+                    });
+
+                    // backdrop-filter 블러 효과를 일반 배경으로 대체
+                    const formContainer = clonedDoc.getElementById('form-container');
+                    if (formContainer) {
+                        const computedStyle = window.getComputedStyle(document.getElementById('form-container'));
+                        const bgColor = computedStyle.backgroundColor;
+
+                        // backdrop-filter를 제거하고 배경색만 사용
+                        formContainer.style.backdropFilter = 'none';
+                        formContainer.style.webkitBackdropFilter = 'none';
+                        formContainer.style.backgroundColor = bgColor;
+                    }
                 }
             }).then(canvas => {
                 // 원래 스타일로 복원
