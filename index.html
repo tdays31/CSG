@@ -1363,13 +1363,23 @@
                     clonedBody.style.height = '1800px';
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
+                    clonedBody.style.display = 'flex';
+                    clonedBody.style.alignItems = 'center';
+                    clonedBody.style.justifyContent = 'center';
 
-                    // 배경 이미지 설정
-                    if (clonedBody.style.backgroundImage) {
+                    // 배경 이미지 설정 - 원본 body에서 가져와서 재설정
+                    const originalBgImage = window.getComputedStyle(body).backgroundImage;
+                    if (originalBgImage && originalBgImage !== 'none') {
+                        clonedBody.style.backgroundImage = originalBgImage;
                         clonedBody.style.backgroundAttachment = 'scroll';
-                        clonedBody.style.backgroundSize = 'cover';
+                        clonedBody.style.backgroundSize = 'cover';  // 2500x1800에 맞춰 cover
                         clonedBody.style.backgroundRepeat = 'no-repeat';
                         clonedBody.style.backgroundPosition = 'center';
+                    }
+                    // gradient 배경 처리
+                    const originalBg = window.getComputedStyle(body).background;
+                    if (!originalBgImage || originalBgImage === 'none') {
+                        clonedBody.style.background = originalBg;
                     }
 
                     // 클론된 문서의 모든 이미지에 crossOrigin 설정
