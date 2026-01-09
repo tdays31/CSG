@@ -186,6 +186,11 @@
             z-index: 999;
             overflow-y: auto;
             padding: 80px 30px 30px;
+            color: #000 !important;
+        }
+
+        .customize-panel * {
+            color: #000 !important;
         }
 
         .customize-panel.open {
@@ -525,14 +530,14 @@
         textarea {
             min-height: 100px;
             resize: vertical;
-            border: 1px dotted transparent;
+            border: none;
             padding: 10px 8px;
             line-height: 1.6;
         }
 
         textarea:hover,
         textarea:focus {
-            border-color: #ddd;
+            border: none;
         }
 
         /* 특이사항 및 오너 성명 섹션 */
@@ -1398,7 +1403,7 @@
                         formContainer.style.backdropFilter = 'none';
                         formContainer.style.webkitBackdropFilter = 'none';
 
-                        // 배경색의 불투명도를 조금 높여서 블러 효과 없이도 가독성 확보
+                        // 배경색의 불투명도를 높여서 블러 효과 없이도 가독성 확보
                         const rgba = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
                         if (rgba) {
                             const r = rgba[1];
@@ -1406,9 +1411,9 @@
                             const b = rgba[3];
                             let alpha = rgba[4] ? parseFloat(rgba[4]) : 1;
 
-                            // 투명도가 낮으면 약간 높여서 가독성 개선
-                            if (alpha < 0.5) {
-                                alpha = Math.min(alpha + 0.3, 0.95);
+                            // 투명도를 크게 높여서 배경 보이도록
+                            if (alpha < 0.9) {
+                                alpha = Math.min(alpha + 0.4, 0.98);
                             }
 
                             formContainer.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
@@ -1430,19 +1435,39 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
-                // 0.5배 크기로 축소
-                const scaledCanvas = document.createElement('canvas');
-                const scaledWidth = canvas.width * 0.5;
-                const scaledHeight = canvas.height * 0.5;
-                scaledCanvas.width = scaledWidth;
-                scaledCanvas.height = scaledHeight;
+                // 0.5배 크기로 축소 후 2:1 비율 조정
+                let scaledWidth = canvas.width * 0.5;
+                let scaledHeight = canvas.height * 0.5;
 
-                const ctx = scaledCanvas.getContext('2d');
-                ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
+                // 가로 최대 2000px 제한
+                if (scaledWidth > 2000) {
+                    const ratio = 2000 / scaledWidth;
+                    scaledWidth = 2000;
+                    scaledHeight = scaledHeight * ratio;
+                }
+
+                // 2:1 비율로 조정 (가로:세로 = 2:1)
+                const targetHeight = scaledWidth / 2;
+
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = scaledWidth;
+                finalCanvas.height = targetHeight;
+
+                const ctx = finalCanvas.getContext('2d');
+
+                // 배경을 투명하게 설정
+                ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+                // 원본 이미지를 중앙에 배치 (세로가 부족하면 잘리고, 여유가 있으면 여백)
+                const sourceHeight = Math.min(scaledHeight, targetHeight);
+                const yOffset = (targetHeight - sourceHeight) / 2;
+
+                ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height * (sourceHeight / scaledHeight),
+                             0, yOffset, scaledWidth, sourceHeight);
 
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
-                link.href = scaledCanvas.toDataURL();
+                link.href = finalCanvas.toDataURL();
                 link.click();
             });
         });
