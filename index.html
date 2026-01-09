@@ -138,14 +138,14 @@
             font-size: var(--font-size);
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             min-height: 100vh;
-            min-width: 1490px;
+            min-width: 1940px;  /* container 1900px + 여유 */
             padding: 40px 20px;
             color: var(--text-color);
             overflow-x: auto;
         }
 
         .container {
-            width: 1450px;
+            width: 1900px;  /* form-container 1800px + 여유 공간 */
             margin: 0 auto;
             position: relative;
         }
@@ -249,7 +249,7 @@
             padding: 40px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             position: relative;
-            max-width: 1000px;
+            max-width: 1800px;  /* 1.8배 증가 (1000px → 1800px) */
             margin: 0 auto;
         }
 
@@ -1280,7 +1280,7 @@
             const container = document.querySelector('.container');
             const formContainer = document.getElementById('form-container');
             const originalWidth = container.offsetWidth;
-            const minWidth = 1450;
+            const minWidth = 1900;  // container width와 동일하게
 
             // 배경 포함을 위해 임시 스타일 적용
             const originalBackground = container.style.background;
@@ -1318,6 +1318,15 @@
                     return element.classList.contains('no-export');
                 },
                 onclone: function(clonedDoc) {
+                    // 배경 이미지가 잘리지 않도록 설정
+                    const clonedBody = clonedDoc.body;
+                    if (clonedBody.style.backgroundImage) {
+                        clonedBody.style.backgroundAttachment = 'scroll';  // fixed → scroll
+                        clonedBody.style.backgroundSize = 'contain';  // cover → contain
+                        clonedBody.style.backgroundRepeat = 'no-repeat';
+                        clonedBody.style.backgroundPosition = 'center';
+                    }
+
                     // 클론된 문서의 모든 이미지에 crossOrigin 설정
                     const images = clonedDoc.querySelectorAll('img');
                     images.forEach(img => {
