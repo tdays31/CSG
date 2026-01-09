@@ -605,7 +605,7 @@
         }
 
         .image-selector-placeholder {
-            color: #000 !important;
+            color: white !important;
             font-size: 12px;
             text-align: center;
             padding: 10px;
@@ -1381,34 +1381,11 @@
                         topInput.parentNode.replaceChild(div, topInput);
                     }
 
-                    // backdrop-filter 블러 효과를 일반 배경으로 대체
-                    // html2canvas는 backdrop-filter를 지원하지 않으므로 배경색만 사용
+                    // backdrop-filter 블러 효과 제거 (html2canvas는 지원하지 않음)
                     const formContainer = clonedDoc.getElementById('form-container');
                     if (formContainer) {
-                        const computedStyle = window.getComputedStyle(document.getElementById('form-container'));
-                        const bgColor = computedStyle.backgroundColor;
-
-                        // backdrop-filter를 제거하고 배경색만 사용
                         formContainer.style.backdropFilter = 'none';
                         formContainer.style.webkitBackdropFilter = 'none';
-
-                        // 배경색의 불투명도를 높여서 블러 효과 없이도 가독성 확보
-                        const rgba = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-                        if (rgba) {
-                            const r = rgba[1];
-                            const g = rgba[2];
-                            const b = rgba[3];
-                            let alpha = rgba[4] ? parseFloat(rgba[4]) : 1;
-
-                            // 투명도를 크게 높여서 배경 보이도록
-                            if (alpha < 0.9) {
-                                alpha = Math.min(alpha + 0.4, 0.98);
-                            }
-
-                            formContainer.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                        } else {
-                            formContainer.style.backgroundColor = bgColor;
-                        }
                     }
                 }
             }).then(canvas => {
@@ -1424,47 +1401,42 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
-                // 0.5배 크기로 축소
+                // 고정 크기: 2000x1080px
+                const finalWidth = 2000;
+                const finalHeight = 1080;
+
+                // 위아래 여백 50px씩
+                const verticalPadding = 50;
+                const availableHeight = finalHeight - (verticalPadding * 2);
+
+                // 0.5배 축소
                 let scaledWidth = canvas.width * 0.5;
                 let scaledHeight = canvas.height * 0.5;
 
-                // 가로 최대 2000px 제한
-                if (scaledWidth > 2000) {
-                    const ratio = 2000 / scaledWidth;
-                    scaledWidth = 2000;
-                    scaledHeight = scaledHeight * ratio;
-                }
+                // form-container를 최종 크기에 맞게 축소
+                const scaleToFit = Math.min(
+                    finalWidth / scaledWidth,
+                    availableHeight / scaledHeight
+                );
 
-                // 2:1.4 비율로 조정 (가로:세로 = 2:1.4)
-                const targetHeight = scaledWidth / 1.428571; // 2/1.4 = 1.428571
+                const fitWidth = scaledWidth * scaleToFit;
+                const fitHeight = scaledHeight * scaleToFit;
 
+                // 중앙 배치 계산
+                const xOffset = (finalWidth - fitWidth) / 2;
+                const yOffset = verticalPadding + (availableHeight - fitHeight) / 2;
+
+                // 최종 캔버스 생성
                 const finalCanvas = document.createElement('canvas');
-                finalCanvas.width = scaledWidth;
-                finalCanvas.height = targetHeight;
+                finalCanvas.width = finalWidth;
+                finalCanvas.height = finalHeight;
 
                 const ctx = finalCanvas.getContext('2d');
 
                 // 배경을 투명하게 설정
                 ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-                // 원본 이미지 전체를 캔버스에 맞게 축소하여 중앙에 배치
-                // 이미지가 잘리지 않도록 contain 방식으로 축소
-                const scaleRatio = Math.min(scaledWidth / scaledWidth, targetHeight / scaledHeight);
-
-                let fitWidth = scaledWidth;
-                let fitHeight = scaledHeight;
-
-                // 이미지가 타겟보다 크면 축소
-                if (scaledHeight > targetHeight) {
-                    const ratio = targetHeight / scaledHeight;
-                    fitWidth = scaledWidth * ratio;
-                    fitHeight = targetHeight;
-                }
-
-                const xOffset = (scaledWidth - fitWidth) / 2;
-                const yOffset = (targetHeight - fitHeight) / 2;
-
-                // 전체 이미지를 축소해서 넣기 (잘리지 않도록)
+                // 전체 이미지를 축소해서 중앙에 배치
                 ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height,
                              xOffset, yOffset, fitWidth, fitHeight);
 
