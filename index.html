@@ -762,16 +762,6 @@
         </div>
 
         <div class="control-group">
-            <label>성격란 배경색</label>
-            <input type="color" id="stickerBg" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>성격란 텍스트색</label>
-            <input type="color" id="stickerText" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)">
-        </div>
-
-        <div class="control-group">
             <label>이미지 배경색 (시작)</label>
             <input type="color" id="imageBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value)">
         </div>
@@ -1585,7 +1575,7 @@
         // 디자인 설정 필드 목록
         const designFields = [
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
-            'textColorBase', 'subTextColor', 'smallTextColor', 'stickerBg', 'stickerText',
+            'textColorBase', 'subTextColor', 'smallTextColor',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
             'bgImageUrl', 'fontSelect', 'inputFontSize'
         ];
@@ -1692,8 +1682,6 @@
                             else if (id === 'textColorBase') updateTextColors();
                             else if (id === 'subTextColor') updateStyle('--label-color', data[id]);
                             else if (id === 'smallTextColor') updateStyle('--small-text-color', data[id]);
-                            else if (id === 'stickerBg') updateStyle('--sticker-bg', data[id]);
-                            else if (id === 'stickerText') updateStyle('--sticker-text', data[id]);
                             else if (id === 'imageBgStart') updateStyle('--image-bg-start', data[id]);
                             else if (id === 'imageBgEnd') updateStyle('--image-bg-end', data[id]);
                             else if (id === 'borderRadius') {
