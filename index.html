@@ -3,104 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💌신청서 공개 폼</title>
+    <title>Modern Form Designer</title>
     <style>
-        /* 로컬 폰트 선언 */
+        /* 폰트 정의 */
         @font-face {
-            font-family: 'MaruBuri-Regular';
+            font-family: 'MaruBuri';
             src: url('font/MaruBuri-Regular.ttf') format('truetype');
+            font-weight: 400;
         }
         @font-face {
-            font-family: 'MaruBuri-Light';
-            src: url('font/MaruBuri-Light.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'MaruBuri-Bold';
+            font-family: 'MaruBuri';
             src: url('font/MaruBuri-Bold.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'MaruBuri-SemiBold';
-            src: url('font/MaruBuri-SemiBold.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'MaruBuri-ExtraLight';
-            src: url('font/MaruBuri-ExtraLight.ttf') format('truetype');
+            font-weight: 700;
         }
         @font-face {
             font-family: 'NanumBarunGothic';
             src: url('font/NanumBarunGothic.ttf') format('truetype');
+            font-weight: 400;
         }
         @font-face {
-            font-family: 'NanumBarunGothicBold';
+            font-family: 'NanumBarunGothic';
             src: url('font/NanumBarunGothicBold.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumBarunGothicLight';
-            src: url('font/NanumBarunGothicLight.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumBarunGothicUltraLight';
-            src: url('font/NanumBarunGothicUltraLight.ttf') format('truetype');
+            font-weight: 700;
         }
         @font-face {
             font-family: 'NanumGothic';
             src: url('font/NanumGothic.ttf') format('truetype');
+            font-weight: 400;
         }
         @font-face {
-            font-family: 'NanumGothicBold';
+            font-family: 'NanumGothic';
             src: url('font/NanumGothicBold.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumGothicExtraBold';
-            src: url('font/NanumGothicExtraBold.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumGothicLight';
-            src: url('font/NanumGothicLight.ttf') format('truetype');
+            font-weight: 700;
         }
         @font-face {
             font-family: 'NanumMyeongjo';
             src: url('font/NanumMyeongjo.ttf') format('truetype');
+            font-weight: 400;
         }
         @font-face {
-            font-family: 'NanumMyeongjoBold';
+            font-family: 'NanumMyeongjo';
             src: url('font/NanumMyeongjoBold.ttf') format('truetype');
+            font-weight: 700;
         }
         @font-face {
-            font-family: 'NanumMyeongjoExtraBold';
-            src: url('font/NanumMyeongjoExtraBold.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquareR';
+            font-family: 'NanumSquare';
             src: url('font/NanumSquareR.ttf') format('truetype');
+            font-weight: 400;
         }
         @font-face {
-            font-family: 'NanumSquareL';
-            src: url('font/NanumSquareL.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquareB';
+            font-family: 'NanumSquare';
             src: url('font/NanumSquareB.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquareEB';
-            src: url('font/NanumSquareEB.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquare_acR';
-            src: url('font/NanumSquare_acR.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquare_acL';
-            src: url('font/NanumSquare_acL.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquare_acB';
-            src: url('font/NanumSquare_acB.ttf') format('truetype');
-        }
-        @font-face {
-            font-family: 'NanumSquare_acEB';
-            src: url('font/NanumSquare_acEB.ttf') format('truetype');
+            font-weight: 700;
         }
 
         :root {
@@ -542,7 +496,7 @@
 
         .special-notes-grid {
             display: grid;
-            grid-template-columns: 1fr 250px;
+            grid-template-columns: 1fr 200px;
             gap: 20px;
             align-items: start;
         }
@@ -562,7 +516,7 @@
         .image-selector {
             background: #000;
             border-radius: var(--input-radius);
-            width: 250px;
+            width: 200px;
             height: 350px;
             display: flex;
             flex-direction: column;
@@ -793,38 +747,14 @@
 
         <div class="control-group">
             <label>폰트 선택</label>
-            <select id="fontSelect" onchange="updateFontFromSelect(this.value)">
-                <option value="">기본 폰트</option>
-                <option value="MaruBuri-Regular">MaruBuri Regular</option>
-                <option value="MaruBuri-Light">MaruBuri Light</option>
-                <option value="MaruBuri-Bold">MaruBuri Bold</option>
-                <option value="MaruBuri-SemiBold">MaruBuri SemiBold</option>
-                <option value="MaruBuri-ExtraLight">MaruBuri ExtraLight</option>
+            <select id="fontSelector" onchange="changeFontFamily(this.value)">
+                <option value="default">기본 시스템 폰트</option>
+                <option value="MaruBuri">마루 부리</option>
                 <option value="NanumBarunGothic">나눔바른고딕</option>
-                <option value="NanumBarunGothicBold">나눔바른고딕 Bold</option>
-                <option value="NanumBarunGothicLight">나눔바른고딕 Light</option>
-                <option value="NanumBarunGothicUltraLight">나눔바른고딕 UltraLight</option>
                 <option value="NanumGothic">나눔고딕</option>
-                <option value="NanumGothicBold">나눔고딕 Bold</option>
-                <option value="NanumGothicExtraBold">나눔고딕 ExtraBold</option>
-                <option value="NanumGothicLight">나눔고딕 Light</option>
                 <option value="NanumMyeongjo">나눔명조</option>
-                <option value="NanumMyeongjoBold">나눔명조 Bold</option>
-                <option value="NanumMyeongjoExtraBold">나눔명조 ExtraBold</option>
-                <option value="NanumSquareR">나눔스퀘어 Regular</option>
-                <option value="NanumSquareL">나눔스퀘어 Light</option>
-                <option value="NanumSquareB">나눔스퀘어 Bold</option>
-                <option value="NanumSquareEB">나눔스퀘어 ExtraBold</option>
-                <option value="NanumSquare_acR">나눔스퀘어 AC Regular</option>
-                <option value="NanumSquare_acL">나눔스퀘어 AC Light</option>
-                <option value="NanumSquare_acB">나눔스퀘어 AC Bold</option>
-                <option value="NanumSquare_acEB">나눔스퀘어 AC ExtraBold</option>
+                <option value="NanumSquare">나눔스퀘어</option>
             </select>
-        </div>
-
-        <div class="control-group">
-            <label>Input 텍스트 크기: <span id="inputFontSizeValue">14</span>px</label>
-            <input type="range" min="10" max="24" value="14" step="1" id="inputFontSize" oninput="updateInputFontSize(this.value)">
         </div>
 
         <div class="control-group">
@@ -930,6 +860,7 @@
                 <div class="special-notes-grid">
                     <textarea id="specialNotes" placeholder="주변인이 쉽게 알 수 있는 설정만을 간략히 요약하여 작성하시는 것을 권장드립니다."></textarea>
                     <div class="image-selector" id="imageSelector">
+                        <img id="selectedImage" alt="Selected">
                         <div class="image-selector-placeholder no-export">
                             이미지 선택
                         </div>
@@ -943,7 +874,30 @@
             <!-- 오너 성향 -->
             <div class="owner-section">
                 <div class="section-title">오너 성향</div>
-                <input type="text" id="owner4" placeholder="트리거 작성" style="width: 100%;" />
+                <div class="owner-grid">
+                    <select id="owner1">
+                        <option value="">선택</option>
+                        <option value="김">김</option>
+                        <option value="이">이</option>
+                        <option value="박">박</option>
+                        <option value="최">최</option>
+                    </select>
+                    <select id="owner2">
+                        <option value="">선택</option>
+                        <option value="민">민</option>
+                        <option value="서">서</option>
+                        <option value="준">준</option>
+                        <option value="현">현</option>
+                    </select>
+                    <select id="owner3">
+                        <option value="">선택</option>
+                        <option value="수">수</option>
+                        <option value="진">진</option>
+                        <option value="호">호</option>
+                        <option value="영">영</option>
+                    </select>
+                    <input type="text" id="owner4" placeholder="트리거 작성" />
+                </div>
             </div>
 
             <!-- 저장 버튼 (나중에 활성화) -->
@@ -984,34 +938,13 @@
             updateStyle('--text-color', baseColor);
         }
 
-        // 폰트 선택 적용
-        function updateFontFromSelect(fontName) {
-            if (fontName) {
-                updateStyle('--font-family', `${fontName}, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
+        // 폰트 변경
+        function changeFontFamily(fontValue) {
+            if (fontValue === 'default') {
+                updateStyle('--font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif');
             } else {
-                updateStyle('--font-family', `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
+                updateStyle('--font-family', `'${fontValue}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`);
             }
-            saveToLocalStorage();
-        }
-
-        // Input 텍스트 크기 업데이트
-        function updateInputFontSize(size) {
-            document.getElementById('inputFontSizeValue').textContent = size;
-            // 크기가 작거나 큰 input을 제외한 일반 input, textarea에만 적용
-            const style = document.createElement('style');
-            style.id = 'input-font-size-style';
-            const existingStyle = document.getElementById('input-font-size-style');
-            if (existingStyle) {
-                existingStyle.remove();
-            }
-            style.textContent = `
-                .form-card input[type="text"]:not([style*="font-size"]):not(#topInput):not(.korean-age):not(.month-input):not(.day-input):not(.blood-type):not(.hire-date):not(.department),
-                .form-card textarea {
-                    font-size: ${size}px !important;
-                }
-            `;
-            document.head.appendChild(style);
-            saveToLocalStorage();
         }
 
         // 이미지 미리보기
@@ -1247,22 +1180,18 @@
 
         // 이미지 저장 기능
         document.getElementById('saveBtn').addEventListener('click', function() {
-            const body = document.body;
             const container = document.querySelector('.container');
             const formContainer = document.getElementById('form-container');
             const originalWidth = container.offsetWidth;
             const minWidth = 1450;
 
-            // 배경 포함을 위해 임시 스타일 적용
+            // 배경 포함을 위해 container에 임시 스타일 적용
             const originalBackground = container.style.background;
             const originalPadding = container.style.padding;
             const originalFormPadding = formContainer.style.padding;
-            const originalBodyPadding = body.style.padding;
 
-            // 배경이 더 보이도록 padding 증가 (7:3 비율 고려)
-            body.style.padding = '120px 80px';
-            container.style.background = 'transparent';
-            container.style.padding = '0';
+            container.style.background = getComputedStyle(document.body).background;
+            container.style.padding = '60px 20px';
             formContainer.style.padding = '60px 40px';
 
             // 최소 너비 보장
@@ -1278,13 +1207,15 @@
                 input.style.overflow = 'visible';
             });
 
-            html2canvas(body, {
+            html2canvas(container, {
                 scale: 2,
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
                 allowTaint: false,
                 letterRendering: true,
+                width: Math.max(originalWidth, minWidth),
+                windowWidth: Math.max(originalWidth, minWidth),
                 ignoreElements: function(element) {
                     return element.classList.contains('no-export');
                 },
@@ -1302,7 +1233,6 @@
                 container.style.background = originalBackground;
                 container.style.padding = originalPadding;
                 formContainer.style.padding = originalFormPadding;
-                body.style.padding = originalBodyPadding;
                 container.style.width = '';
 
                 // overflow 복원
@@ -1320,12 +1250,13 @@
         // ========== 이미지 선택 기능 ==========
         // Image 폴더에 있는 이미지 파일명 목록 (사용자가 이미지를 추가할 때 여기에 파일명을 추가하세요)
         const imageList = [
-            '1.차원천명.png'
+            'Test.png'
         ];
 
         function initImageSelector() {
             const imageSelector = document.getElementById('imageSelector');
             const imageDropdown = document.getElementById('imageDropdown');
+            const selectedImage = document.getElementById('selectedImage');
 
             // 이미지 목록 생성
             imageList.forEach(imageName => {
@@ -1345,22 +1276,34 @@
                 item.addEventListener('click', function(e) {
                     e.stopPropagation();
 
-                    // 원본 이미지를 그대로 사용 (품질 유지)
+                    // 이미지를 base64로 변환하여 CORS 문제 해결
                     const tempImg = new Image();
                     tempImg.onload = function() {
                         const canvas = document.createElement('canvas');
 
-                        // 원본 크기 그대로 사용
-                        canvas.width = tempImg.width;
-                        canvas.height = tempImg.height;
+                        // 200x350 컨테이너에 맞춰 리사이즈 (비율 유지)
+                        const maxWidth = 200;
+                        const maxHeight = 350;
+                        let width = tempImg.width;
+                        let height = tempImg.height;
+
+                        // 비율 계산
+                        const widthRatio = maxWidth / width;
+                        const heightRatio = maxHeight / height;
+                        const ratio = Math.min(widthRatio, heightRatio);
+
+                        // 리사이즈된 크기 적용
+                        width = width * ratio;
+                        height = height * ratio;
+
+                        canvas.width = width;
+                        canvas.height = height;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(tempImg, 0, 0);
+                        ctx.drawImage(tempImg, 0, 0, width, height);
 
                         // base64로 변환하여 저장
                         const base64Data = canvas.toDataURL('image/png');
-                        imageSelector.style.backgroundImage = `url(${base64Data})`;
-                        imageSelector.style.backgroundSize = 'cover';
-                        imageSelector.style.backgroundPosition = 'center';
+                        selectedImage.src = base64Data;
                         imageSelector.classList.add('has-image');
                         imageDropdown.classList.remove('open');
                         saveToLocalStorage(); // 자동 저장
@@ -1411,7 +1354,7 @@
         const inputFields = [
             'topInput', 'nameKor', 'nameEng', 'koreanAge', 'birthMonth', 'birthDay',
             'bloodType', 'joinDate', 'department', 'abilityName', 'abilityDesc',
-            'specialNotes', 'owner4'
+            'specialNotes', 'owner1', 'owner2', 'owner3', 'owner4'
         ];
 
         // 디자인 설정 필드 목록
@@ -1419,7 +1362,7 @@
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'stickerBg', 'stickerText',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
-            'bgImageUrl', 'fontSelect', 'inputFontSize'
+            'bgImageUrl', 'fontSelector'
         ];
 
         // 체크박스 필드 목록
@@ -1468,16 +1411,10 @@
             }
 
             // 선택된 이미지 저장
+            const selectedImage = document.getElementById('selectedImage');
             const imageSelector = document.getElementById('imageSelector');
-            if (imageSelector && imageSelector.classList.contains('has-image')) {
-                const bgImage = imageSelector.style.backgroundImage;
-                if (bgImage) {
-                    // url("...") 형식에서 URL만 추출
-                    const match = bgImage.match(/url\(['"]?(.+?)['"]?\)/);
-                    if (match) {
-                        data['selectedSpecialImage'] = match[1];
-                    }
-                }
+            if (selectedImage && selectedImage.src && imageSelector.classList.contains('has-image')) {
+                data['selectedSpecialImage'] = selectedImage.src;
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -1536,11 +1473,7 @@
                                 document.getElementById('inputRadiusValue').textContent = data[id];
                             }
                             else if (id === 'bgImageUrl') updateBackgroundImage(data[id]);
-                            else if (id === 'fontSelect') updateFontFromSelect(data[id]);
-                            else if (id === 'inputFontSize') {
-                                updateInputFontSize(data[id]);
-                                document.getElementById('inputFontSize').value = data[id];
-                            }
+                            else if (id === 'fontSelector') changeFontFamily(data[id]);
                         }
                     }
                 });
@@ -1586,11 +1519,10 @@
 
                 // 선택된 이미지 복원 (base64 데이터)
                 if (data['selectedSpecialImage']) {
+                    const selectedImage = document.getElementById('selectedImage');
                     const imageSelector = document.getElementById('imageSelector');
-                    if (imageSelector) {
-                        imageSelector.style.backgroundImage = `url(${data['selectedSpecialImage']})`;
-                        imageSelector.style.backgroundSize = 'cover';
-                        imageSelector.style.backgroundPosition = 'center';
+                    if (selectedImage && imageSelector) {
+                        selectedImage.src = data['selectedSpecialImage'];
                         imageSelector.classList.add('has-image');
                     }
                 }
