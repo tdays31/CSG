@@ -245,7 +245,6 @@
         /* 메인 폼 컨테이너 */
         #form-container {
             background: var(--input-bg);
-            backdrop-filter: blur(20px);
             border-radius: var(--border-radius);
             padding: 40px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -606,7 +605,7 @@
         }
 
         .image-selector-placeholder {
-            color: white;
+            color: #000 !important;
             font-size: 12px;
             text-align: center;
             padding: 10px;
@@ -1435,7 +1434,7 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
-                // 0.5배 크기로 축소 후 2:1 비율 조정
+                // 0.5배 크기로 축소
                 let scaledWidth = canvas.width * 0.5;
                 let scaledHeight = canvas.height * 0.5;
 
@@ -1446,8 +1445,8 @@
                     scaledHeight = scaledHeight * ratio;
                 }
 
-                // 2:1 비율로 조정 (가로:세로 = 2:1)
-                const targetHeight = scaledWidth / 2;
+                // 2:1.4 비율로 조정 (가로:세로 = 2:1.4)
+                const targetHeight = scaledWidth / 1.428571; // 2/1.4 = 1.428571
 
                 const finalCanvas = document.createElement('canvas');
                 finalCanvas.width = scaledWidth;
@@ -1458,12 +1457,26 @@
                 // 배경을 투명하게 설정
                 ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-                // 원본 이미지를 중앙에 배치 (세로가 부족하면 잘리고, 여유가 있으면 여백)
-                const sourceHeight = Math.min(scaledHeight, targetHeight);
-                const yOffset = (targetHeight - sourceHeight) / 2;
+                // 원본 이미지 전체를 캔버스에 맞게 축소하여 중앙에 배치
+                // 이미지가 잘리지 않도록 contain 방식으로 축소
+                const scaleRatio = Math.min(scaledWidth / scaledWidth, targetHeight / scaledHeight);
 
-                ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height * (sourceHeight / scaledHeight),
-                             0, yOffset, scaledWidth, sourceHeight);
+                let fitWidth = scaledWidth;
+                let fitHeight = scaledHeight;
+
+                // 이미지가 타겟보다 크면 축소
+                if (scaledHeight > targetHeight) {
+                    const ratio = targetHeight / scaledHeight;
+                    fitWidth = scaledWidth * ratio;
+                    fitHeight = targetHeight;
+                }
+
+                const xOffset = (scaledWidth - fitWidth) / 2;
+                const yOffset = (targetHeight - fitHeight) / 2;
+
+                // 전체 이미지를 축소해서 넣기 (잘리지 않도록)
+                ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height,
+                             xOffset, yOffset, fitWidth, fitHeight);
 
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
