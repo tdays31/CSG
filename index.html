@@ -828,8 +828,13 @@
         </div>
 
         <div class="control-group">
-            <label>Input 텍스트 크기: <span id="inputFontSizeValue">14</span>px</label>
+            <label>메인 내용 크기: <span id="inputFontSizeValue">14</span>px</label>
             <input type="range" min="10" max="24" value="14" step="1" id="inputFontSize" oninput="updateInputFontSize(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>서브 제목 크기: <span id="labelFontSizeValue">11</span>px</label>
+            <input type="range" min="8" max="18" value="11" step="1" id="labelFontSize" oninput="updateLabelFontSize(this.value)">
         </div>
 
         <div class="control-group">
@@ -1002,7 +1007,7 @@
             saveToLocalStorage();
         }
 
-        // Input 텍스트 크기 업데이트
+        // 메인 내용 텍스트 크기 업데이트
         function updateInputFontSize(size) {
             document.getElementById('inputFontSizeValue').textContent = size;
             // 크기가 작거나 큰 input을 제외한 일반 input, textarea에만 적용
@@ -1015,6 +1020,25 @@
             style.textContent = `
                 #form-container input[type="text"]:not([style*="font-size"]):not(#topInput):not(.input-small):not(.input-large):not(#koreanAge):not(#birthMonth):not(#birthDay):not(#bloodType):not(#joinDate):not(#department),
                 #form-container textarea {
+                    font-size: ${size}px !important;
+                }
+            `;
+            document.head.appendChild(style);
+            saveToLocalStorage();
+        }
+
+        // 서브 제목 (라벨) 크기 업데이트
+        function updateLabelFontSize(size) {
+            document.getElementById('labelFontSizeValue').textContent = size;
+            const style = document.createElement('style');
+            style.id = 'label-font-size-style';
+            const existingStyle = document.getElementById('label-font-size-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            style.textContent = `
+                .input-group label,
+                .bottom-section > label {
                     font-size: ${size}px !important;
                 }
             `;
@@ -1300,13 +1324,15 @@
             body.style.padding = '0';
             body.style.margin = '0';
             body.style.overflow = 'visible';
+            body.style.display = 'flex';
+            body.style.alignItems = 'center';  // 세로 중앙 정렬
+            body.style.justifyContent = 'center';  // 가로 중앙 정렬
 
             container.style.background = 'transparent';
             container.style.padding = '0';
             container.style.width = '1750px';
             container.style.overflow = 'visible';
-            container.style.margin = 'auto';  // 중앙 정렬
-            container.style.paddingTop = '200px';  // 위 여백
+            container.style.margin = '0';
 
             formContainer.style.padding = '60px 40px';
             formContainer.style.maxWidth = '1700px';
@@ -1438,6 +1464,9 @@
                 body.style.width = originalBodyWidth;
                 body.style.height = originalBodyHeight;
                 body.style.minWidth = originalBodyMinWidth;
+                body.style.display = '';  // 원래대로
+                body.style.alignItems = '';
+                body.style.justifyContent = '';
                 container.style.width = originalContainerWidth;
                 formContainer.style.maxWidth = originalFormMaxWidth;
                 container.style.overflow = originalContainerOverflow;
@@ -1573,7 +1602,7 @@
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'smallTextColor',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
-            'bgImageUrl', 'fontSelect', 'inputFontSize'
+            'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize'
         ];
 
         // 체크박스 필드 목록
@@ -1693,6 +1722,10 @@
                             else if (id === 'inputFontSize') {
                                 updateInputFontSize(data[id]);
                                 document.getElementById('inputFontSize').value = data[id];
+                            }
+                            else if (id === 'labelFontSize') {
+                                updateLabelFontSize(data[id]);
+                                document.getElementById('labelFontSize').value = data[id];
                             }
                         }
                     }
