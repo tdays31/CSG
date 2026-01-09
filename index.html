@@ -1285,20 +1285,32 @@
             const originalPadding = container.style.padding;
             const originalFormPadding = formContainer.style.padding;
             const originalBodyPadding = body.style.padding;
+            const originalBodyWidth = body.style.width;
+            const originalBodyHeight = body.style.height;
+            const originalBodyMinWidth = body.style.minWidth;
             const originalContainerWidth = container.style.width;
             const originalFormMaxWidth = formContainer.style.maxWidth;
             const originalFormOverflow = formContainer.style.overflow;
             const originalContainerOverflow = container.style.overflow;
 
-            // 저장용 임시 스타일 적용 (1.7배 크기)
-            body.style.padding = '350px 250px';  // 좌우 여백 증가로 내용 안잘리게
+            // 저장용 임시 스타일 적용 - body를 2500x1800으로 고정
+            body.style.width = '2500px';
+            body.style.height = '1800px';
+            body.style.minWidth = '2500px';
+            body.style.padding = '0';
+            body.style.margin = '0';
+            body.style.overflow = 'visible';
+
             container.style.background = 'transparent';
             container.style.padding = '0';
-            container.style.width = '1750px';  // 저장 시 1750px로 키움
-            container.style.overflow = 'visible';  // 내용이 안잘리게
+            container.style.width = '1750px';
+            container.style.overflow = 'visible';
+            container.style.margin = 'auto';  // 중앙 정렬
+            container.style.paddingTop = '200px';  // 위 여백
+
             formContainer.style.padding = '60px 40px';
-            formContainer.style.maxWidth = '1700px';  // 저장 시 1700px로 키움 (1.7배)
-            formContainer.style.overflow = 'visible';  // 내용이 안잘리게
+            formContainer.style.maxWidth = '1700px';
+            formContainer.style.overflow = 'visible';
 
             // 모든 input의 overflow를 visible로 강제
             const allInputs = container.querySelectorAll('input, select, textarea');
@@ -1319,11 +1331,17 @@
                     return element.classList.contains('no-export');
                 },
                 onclone: function(clonedDoc) {
-                    // 배경 이미지 설정
+                    // body를 2500x1800으로 고정하여 배경 이미지가 꽉 차도록
                     const clonedBody = clonedDoc.body;
+                    clonedBody.style.width = '2500px';
+                    clonedBody.style.height = '1800px';
+                    clonedBody.style.minWidth = '2500px';
+                    clonedBody.style.overflow = 'visible';
+
+                    // 배경 이미지 설정
                     if (clonedBody.style.backgroundImage) {
-                        clonedBody.style.backgroundAttachment = 'scroll';  // fixed → scroll
-                        clonedBody.style.backgroundSize = 'cover';  // cover 유지
+                        clonedBody.style.backgroundAttachment = 'scroll';
+                        clonedBody.style.backgroundSize = 'cover';
                         clonedBody.style.backgroundRepeat = 'no-repeat';
                         clonedBody.style.backgroundPosition = 'center';
                     }
@@ -1417,6 +1435,9 @@
                 container.style.padding = originalPadding;
                 formContainer.style.padding = originalFormPadding;
                 body.style.padding = originalBodyPadding;
+                body.style.width = originalBodyWidth;
+                body.style.height = originalBodyHeight;
+                body.style.minWidth = originalBodyMinWidth;
                 container.style.width = originalContainerWidth;
                 formContainer.style.maxWidth = originalFormMaxWidth;
                 container.style.overflow = originalContainerOverflow;
@@ -1427,44 +1448,20 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
-                // 고정 크기: 가로 2500px x 세로 1800px (landscape)
-                const finalWidth = 2500;  // 가로
-                const finalHeight = 1800; // 세로
+                // body가 2500x1800으로 고정되어 렌더링되었으므로
+                // canvas를 2500x1800로 리사이즈 (scale=3이므로 7500x5400 → 2500x1800)
+                const finalWidth = 2500;
+                const finalHeight = 1800;
 
-                // 위아래 여백 50px씩
-                const verticalPadding = 50;
-                const availableHeight = finalHeight - (verticalPadding * 2);
-
-                // 0.5배 축소 제거 - 원본 크기 사용 (텍스트 품질 유지)
-                let scaledWidth = canvas.width;
-                let scaledHeight = canvas.height;
-
-                // form-container를 최종 크기에 맞게 축소
-                const scaleToFit = Math.min(
-                    finalWidth / scaledWidth,
-                    availableHeight / scaledHeight
-                );
-
-                const fitWidth = scaledWidth * scaleToFit;
-                const fitHeight = scaledHeight * scaleToFit;
-
-                // 중앙 배치 계산
-                const xOffset = (finalWidth - fitWidth) / 2;
-                const yOffset = verticalPadding + (availableHeight - fitHeight) / 2;
-
-                // 최종 캔버스 생성 - 명확히 가로x세로
                 const finalCanvas = document.createElement('canvas');
-                finalCanvas.width = finalWidth;   // 가로 2500
-                finalCanvas.height = finalHeight; // 세로 1800
+                finalCanvas.width = finalWidth;
+                finalCanvas.height = finalHeight;
 
                 const ctx = finalCanvas.getContext('2d');
 
-                // 배경을 투명하게 설정
-                ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-                // 전체 이미지를 축소해서 중앙에 배치
+                // canvas를 2500x1800로 리사이즈
                 ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height,
-                             xOffset, yOffset, fitWidth, fitHeight);
+                             0, 0, finalWidth, finalHeight);
 
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
