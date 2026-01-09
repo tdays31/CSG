@@ -68,6 +68,7 @@
             --input-focus: rgba(102, 126, 234, 0.6);
             --text-color: #333333;
             --label-color: #999999;
+            --small-text-color: #999999;
             --shadow-color: rgba(102, 126, 234, 0.1);
             --border-radius: 16px;
             --input-radius: 12px;
@@ -401,7 +402,7 @@
 
         .stacked-inputs .input-small {
             font-size: 13px;
-            color: #999999 !important;
+            color: var(--small-text-color) !important;
             padding: 6px 4px;
             line-height: 1.4;
             overflow: visible;
@@ -661,11 +662,11 @@
     </style>
 </head>
 <body>
-    <button class="customize-btn" onclick="toggleCustomizePanel()">
+    <button class="customize-btn no-export" onclick="toggleCustomizePanel()">
         🎨 디자인 커스터마이징
     </button>
 
-    <div class="customize-panel" id="customizePanel">
+    <div class="customize-panel no-export" id="customizePanel">
         <h3>디자인 설정</h3>
 
         <div class="control-group">
@@ -704,6 +705,11 @@
         <div class="control-group">
             <label>서브텍스트 색상</label>
             <input type="color" id="subTextColor" value="#999999" onchange="updateStyle('--label-color', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>작은글씨 색상</label>
+            <input type="color" id="smallTextColor" value="#999999" onchange="updateStyle('--small-text-color', this.value)">
         </div>
 
         <div class="control-group">
@@ -836,6 +842,9 @@
                                         <option value="지옥">지옥</option>
                                         <option value="아귀">아귀</option>
                                         <option value="축생">축생</option>
+                                        <option value="차원천명">차원천명</option>
+                                        <option value="차원사">차원사</option>
+                                        <option value="차원상">차원상</option>
                                     </select>
                                 </div>
                             </div>
@@ -963,7 +972,7 @@
             }
         }
 
-        // 출생 정보 자동 계산 (2035년 기준, 한국식 나이)
+        // 출생 정보 자동 계산 (2036년 2월 1일 기준)
         function calculateBirthInfo() {
             const ageInput = document.getElementById('koreanAge').value;
             const monthInput = document.getElementById('birthMonth').value;
@@ -975,20 +984,43 @@
                 return;
             }
 
-            const koreanAge = parseInt(ageInput);
-            if (isNaN(koreanAge) || koreanAge < 1 || koreanAge > 150) {
+            const currentAge = parseInt(ageInput);
+            if (isNaN(currentAge) || currentAge < 1 || currentAge > 150) {
                 birthInfoOutput.value = '';
                 return;
             }
 
-            // 2036년 기준
+            // 2036년 2월 1일 기준
             const referenceYear = 2036;
+            const referenceMonth = 2;
+            const referenceDay = 1;
 
-            // 한국식 나이로 출생년도 계산
-            const birthYear = referenceYear - koreanAge + 1;
+            // 입력한 나이로 출생년도 계산 (기본값)
+            let birthYear = referenceYear - currentAge;
 
-            // 만 나이 계산 (한국 나이 - 1)
-            const actualAge = koreanAge - 1;
+            // 생일이 기준일(2월 1일) 이후면 아직 생일이 안 지났으므로 -1년
+            if (monthInput) {
+                const month = parseInt(monthInput);
+                if (!isNaN(month) && month >= 1 && month <= 12) {
+                    if (month > referenceMonth) {
+                        // 3월~12월생: 아직 생일 안 지남
+                        birthYear -= 1;
+                    } else if (month === referenceMonth && dayInput) {
+                        // 2월생인 경우 일자 확인
+                        const day = parseInt(dayInput);
+                        if (!isNaN(day) && day >= 1 && day <= 31) {
+                            if (day > referenceDay) {
+                                // 2월 2일 이후: 아직 생일 안 지남
+                                birthYear -= 1;
+                            }
+                        }
+                    }
+                    // 1월생 또는 2월 1일생: 이미 생일 지남, 그대로
+                }
+            }
+
+            // 입력한 나이 그대로 사용
+            const displayAge = currentAge;
 
             let result = `${birthYear}년`;
 
@@ -1008,8 +1040,6 @@
                     result += ` ${dayStr}일`;
                 }
             }
-
-            result += ` (${actualAge}세)`;
 
             birthInfoOutput.value = result;
         }
@@ -1190,8 +1220,15 @@
             const originalPadding = container.style.padding;
             const originalFormPadding = formContainer.style.padding;
 
+<<<<<<< HEAD
             container.style.background = getComputedStyle(document.body).background;
             container.style.padding = '60px 20px';
+=======
+            // 배경이 더 보이도록 padding 증가 (한마디 위쪽 잘림 방지)
+            body.style.padding = '200px 80px';
+            container.style.background = 'transparent';
+            container.style.padding = '0';
+>>>>>>> 7e45d2a0318b40035427cff0e398687232e9cd75
             formContainer.style.padding = '60px 40px';
 
             // 최소 너비 보장
@@ -1227,6 +1264,52 @@
                             img.crossOrigin = 'anonymous';
                         }
                     });
+
+                    // textarea를 div로 변환하여 줄바꿈 제대로 처리
+                    const textareas = clonedDoc.querySelectorAll('textarea');
+                    textareas.forEach((textarea, index) => {
+                        // 원본 textarea의 값 가져오기
+                        const originalTextarea = document.querySelectorAll('textarea')[index];
+                        const value = originalTextarea.value;
+
+                        // div 생성
+                        const div = clonedDoc.createElement('div');
+                        div.textContent = value;
+
+                        // 스타일 복사
+                        const computedStyle = window.getComputedStyle(originalTextarea);
+                        div.style.width = computedStyle.width;
+                        div.style.minHeight = computedStyle.minHeight;
+                        div.style.padding = computedStyle.padding;
+                        div.style.fontSize = computedStyle.fontSize;
+                        div.style.fontFamily = computedStyle.fontFamily;
+                        div.style.color = computedStyle.color;
+                        div.style.lineHeight = computedStyle.lineHeight;
+                        div.style.border = computedStyle.border;
+                        div.style.borderRadius = computedStyle.borderRadius;
+                        div.style.backgroundColor = computedStyle.backgroundColor;
+
+                        // 줄바꿈 설정
+                        div.style.whiteSpace = 'pre-wrap';
+                        div.style.wordWrap = 'break-word';
+                        div.style.overflowWrap = 'break-word';
+                        div.style.overflow = 'visible';
+
+                        // textarea를 div로 교체
+                        textarea.parentNode.replaceChild(div, textarea);
+                    });
+
+                    // backdrop-filter 블러 효과를 일반 배경으로 대체
+                    const formContainer = clonedDoc.getElementById('form-container');
+                    if (formContainer) {
+                        const computedStyle = window.getComputedStyle(document.getElementById('form-container'));
+                        const bgColor = computedStyle.backgroundColor;
+
+                        // backdrop-filter를 제거하고 배경색만 사용
+                        formContainer.style.backdropFilter = 'none';
+                        formContainer.style.webkitBackdropFilter = 'none';
+                        formContainer.style.backgroundColor = bgColor;
+                    }
                 }
             }).then(canvas => {
                 // 원래 스타일로 복원
@@ -1240,9 +1323,19 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
+                // 0.5배 크기로 축소
+                const scaledCanvas = document.createElement('canvas');
+                const scaledWidth = canvas.width * 0.5;
+                const scaledHeight = canvas.height * 0.5;
+                scaledCanvas.width = scaledWidth;
+                scaledCanvas.height = scaledHeight;
+
+                const ctx = scaledCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight);
+
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
-                link.href = canvas.toDataURL();
+                link.href = scaledCanvas.toDataURL();
                 link.click();
             });
         });
@@ -1360,7 +1453,7 @@
         // 디자인 설정 필드 목록
         const designFields = [
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
-            'textColorBase', 'subTextColor', 'stickerBg', 'stickerText',
+            'textColorBase', 'subTextColor', 'smallTextColor', 'stickerBg', 'stickerText',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
             'bgImageUrl', 'fontSelector'
         ];
@@ -1460,6 +1553,7 @@
                             else if (id === 'inputBgBase' || id === 'inputBgAlpha') updateInputBgBase();
                             else if (id === 'textColorBase') updateTextColors();
                             else if (id === 'subTextColor') updateStyle('--label-color', data[id]);
+                            else if (id === 'smallTextColor') updateStyle('--small-text-color', data[id]);
                             else if (id === 'stickerBg') updateStyle('--sticker-bg', data[id]);
                             else if (id === 'stickerText') updateStyle('--sticker-text', data[id]);
                             else if (id === 'imageBgStart') updateStyle('--image-bg-start', data[id]);
