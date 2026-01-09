@@ -138,14 +138,14 @@
             font-size: var(--font-size);
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             min-height: 100vh;
-            min-width: 1940px;  /* container 1900px + 여유 */
+            min-width: 1490px;
             padding: 40px 20px;
             color: var(--text-color);
             overflow-x: auto;
         }
 
         .container {
-            width: 1900px;  /* form-container 1800px + 여유 공간 */
+            width: 1450px;
             margin: 0 auto;
             position: relative;
         }
@@ -249,7 +249,7 @@
             padding: 40px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             position: relative;
-            max-width: 1800px;  /* 1.8배 증가 (1000px → 1800px) */
+            max-width: 1000px;
             margin: 0 auto;
         }
 
@@ -1279,25 +1279,22 @@
             const body = document.body;
             const container = document.querySelector('.container');
             const formContainer = document.getElementById('form-container');
-            const originalWidth = container.offsetWidth;
-            const minWidth = 1900;  // container width와 동일하게
 
-            // 배경 포함을 위해 임시 스타일 적용
+            // 원래 스타일 저장
             const originalBackground = container.style.background;
             const originalPadding = container.style.padding;
             const originalFormPadding = formContainer.style.padding;
             const originalBodyPadding = body.style.padding;
+            const originalContainerWidth = container.style.width;
+            const originalFormMaxWidth = formContainer.style.maxWidth;
 
-            // 배경이 더 보이도록 padding 증가 (한마디 위쪽 잘림 방지 + 배경 더 보이게)
+            // 저장용 임시 스타일 적용 (1.8배 크기)
             body.style.padding = '400px 200px';
             container.style.background = 'transparent';
             container.style.padding = '0';
+            container.style.width = '1900px';  // 저장 시 1900px로 키움
             formContainer.style.padding = '60px 40px';
-
-            // 최소 너비 보장
-            if (originalWidth < minWidth) {
-                container.style.width = minWidth + 'px';
-            }
+            formContainer.style.maxWidth = '1800px';  // 저장 시 1800px로 키움 (1.8배)
 
             // 모든 input의 overflow를 visible로 강제
             const allInputs = container.querySelectorAll('input, select, textarea');
@@ -1409,7 +1406,8 @@
                 container.style.padding = originalPadding;
                 formContainer.style.padding = originalFormPadding;
                 body.style.padding = originalBodyPadding;
-                container.style.width = '';
+                container.style.width = originalContainerWidth;
+                formContainer.style.maxWidth = originalFormMaxWidth;
 
                 // overflow 복원
                 allInputs.forEach((input, index) => {
