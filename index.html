@@ -1287,14 +1287,18 @@
             const originalBodyPadding = body.style.padding;
             const originalContainerWidth = container.style.width;
             const originalFormMaxWidth = formContainer.style.maxWidth;
+            const originalFormOverflow = formContainer.style.overflow;
+            const originalContainerOverflow = container.style.overflow;
 
-            // 저장용 임시 스타일 적용 (1.8배 크기)
-            body.style.padding = '400px 200px';
+            // 저장용 임시 스타일 적용 (1.7배 크기)
+            body.style.padding = '350px 250px';  // 좌우 여백 증가로 내용 안잘리게
             container.style.background = 'transparent';
             container.style.padding = '0';
-            container.style.width = '1900px';  // 저장 시 1900px로 키움
+            container.style.width = '1750px';  // 저장 시 1750px로 키움
+            container.style.overflow = 'visible';  // 내용이 안잘리게
             formContainer.style.padding = '60px 40px';
-            formContainer.style.maxWidth = '1800px';  // 저장 시 1800px로 키움 (1.8배)
+            formContainer.style.maxWidth = '1700px';  // 저장 시 1700px로 키움 (1.7배)
+            formContainer.style.overflow = 'visible';  // 내용이 안잘리게
 
             // 모든 input의 overflow를 visible로 강제
             const allInputs = container.querySelectorAll('input, select, textarea');
@@ -1315,11 +1319,11 @@
                     return element.classList.contains('no-export');
                 },
                 onclone: function(clonedDoc) {
-                    // 배경 이미지가 잘리지 않도록 설정
+                    // 배경 이미지 설정
                     const clonedBody = clonedDoc.body;
                     if (clonedBody.style.backgroundImage) {
                         clonedBody.style.backgroundAttachment = 'scroll';  // fixed → scroll
-                        clonedBody.style.backgroundSize = 'contain';  // cover → contain
+                        clonedBody.style.backgroundSize = 'cover';  // cover 유지
                         clonedBody.style.backgroundRepeat = 'no-repeat';
                         clonedBody.style.backgroundPosition = 'center';
                     }
@@ -1393,11 +1397,18 @@
                         topInput.parentNode.replaceChild(div, topInput);
                     }
 
-                    // backdrop-filter 블러 효과 제거 (html2canvas는 지원하지 않음)
-                    const formContainer = clonedDoc.getElementById('form-container');
-                    if (formContainer) {
-                        formContainer.style.backdropFilter = 'none';
-                        formContainer.style.webkitBackdropFilter = 'none';
+                    // backdrop-filter 블러 효과 제거 및 overflow 설정
+                    const clonedFormContainer = clonedDoc.getElementById('form-container');
+                    if (clonedFormContainer) {
+                        clonedFormContainer.style.backdropFilter = 'none';
+                        clonedFormContainer.style.webkitBackdropFilter = 'none';
+                        clonedFormContainer.style.overflow = 'visible';  // 내용이 안잘리도록
+                    }
+
+                    // container도 overflow visible로
+                    const clonedContainer = clonedDoc.querySelector('.container');
+                    if (clonedContainer) {
+                        clonedContainer.style.overflow = 'visible';
                     }
                 }
             }).then(canvas => {
@@ -1408,6 +1419,8 @@
                 body.style.padding = originalBodyPadding;
                 container.style.width = originalContainerWidth;
                 formContainer.style.maxWidth = originalFormMaxWidth;
+                container.style.overflow = originalContainerOverflow;
+                formContainer.style.overflow = originalFormOverflow;
 
                 // overflow 복원
                 allInputs.forEach((input, index) => {
