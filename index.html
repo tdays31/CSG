@@ -269,8 +269,7 @@
             font-weight: 600;
             display: inline-block;
             position: relative;
-            white-space: pre-wrap;
-            word-break: break-word;
+            white-space: nowrap;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             cursor: text;
             outline: none;
@@ -1290,7 +1289,7 @@
             const originalBodyPadding = body.style.padding;
 
             // 배경이 더 보이도록 padding 증가 (한마디 위쪽 잘림 방지)
-            body.style.padding = '200px 80px';
+            body.style.padding = '300px 80px';
             container.style.background = 'transparent';
             container.style.padding = '0';
             formContainer.style.padding = '60px 40px';
@@ -1361,7 +1360,35 @@
                         textarea.parentNode.replaceChild(div, textarea);
                     });
 
+                    // 한마디 input을 div로 변환하여 잘림 방지
+                    const topInput = clonedDoc.getElementById('topInput');
+                    if (topInput) {
+                        const originalTopInput = document.getElementById('topInput');
+                        const value = originalTopInput.value;
+
+                        const div = clonedDoc.createElement('div');
+                        div.textContent = value;
+
+                        const computedStyle = window.getComputedStyle(originalTopInput);
+                        div.style.width = computedStyle.width;
+                        div.style.fontSize = computedStyle.fontSize;
+                        div.style.fontFamily = computedStyle.fontFamily;
+                        div.style.fontWeight = computedStyle.fontWeight;
+                        div.style.color = computedStyle.color;
+                        div.style.textAlign = computedStyle.textAlign;
+                        div.style.lineHeight = computedStyle.lineHeight;
+                        div.style.padding = computedStyle.padding;
+                        div.style.border = computedStyle.border;
+                        div.style.borderRadius = computedStyle.borderRadius;
+                        div.style.backgroundColor = computedStyle.backgroundColor;
+                        div.style.overflow = 'visible';
+                        div.style.whiteSpace = 'pre-wrap';
+
+                        topInput.parentNode.replaceChild(div, topInput);
+                    }
+
                     // backdrop-filter 블러 효과를 일반 배경으로 대체
+                    // html2canvas는 backdrop-filter를 지원하지 않으므로 배경색만 사용
                     const formContainer = clonedDoc.getElementById('form-container');
                     if (formContainer) {
                         const computedStyle = window.getComputedStyle(document.getElementById('form-container'));
@@ -1370,7 +1397,24 @@
                         // backdrop-filter를 제거하고 배경색만 사용
                         formContainer.style.backdropFilter = 'none';
                         formContainer.style.webkitBackdropFilter = 'none';
-                        formContainer.style.backgroundColor = bgColor;
+
+                        // 배경색의 불투명도를 조금 높여서 블러 효과 없이도 가독성 확보
+                        const rgba = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                        if (rgba) {
+                            const r = rgba[1];
+                            const g = rgba[2];
+                            const b = rgba[3];
+                            let alpha = rgba[4] ? parseFloat(rgba[4]) : 1;
+
+                            // 투명도가 낮으면 약간 높여서 가독성 개선
+                            if (alpha < 0.5) {
+                                alpha = Math.min(alpha + 0.3, 0.95);
+                            }
+
+                            formContainer.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        } else {
+                            formContainer.style.backgroundColor = bgColor;
+                        }
                     }
                 }
             }).then(canvas => {
