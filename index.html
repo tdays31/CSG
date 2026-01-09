@@ -1317,9 +1317,9 @@
             const originalFormOverflow = formContainer.style.overflow;
             const originalContainerOverflow = container.style.overflow;
 
-            // 저장용 임시 스타일 적용 - body를 2500x1800으로 고정
+            // 저장용 임시 스타일 적용 - body를 2500x1500으로 고정
             body.style.width = '2500px';
-            body.style.height = '1800px';
+            body.style.height = '1500px';
             body.style.minWidth = '2500px';
             body.style.padding = '0';
             body.style.margin = '0';
@@ -1357,10 +1357,10 @@
                     return element.classList.contains('no-export');
                 },
                 onclone: function(clonedDoc) {
-                    // body를 2500x1800으로 고정하여 배경 이미지가 꽉 차도록
+                    // body를 2500x1500으로 고정하여 배경 이미지가 꽉 차도록
                     const clonedBody = clonedDoc.body;
                     clonedBody.style.width = '2500px';
-                    clonedBody.style.height = '1800px';
+                    clonedBody.style.height = '1500px';
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
                     clonedBody.style.display = 'flex';
@@ -1372,7 +1372,7 @@
                     if (originalBgImage && originalBgImage !== 'none') {
                         clonedBody.style.backgroundImage = originalBgImage;
                         clonedBody.style.backgroundAttachment = 'scroll';
-                        clonedBody.style.backgroundSize = 'cover';  // 2500x1800에 맞춰 cover
+                        clonedBody.style.backgroundSize = 'cover';  // 2500x1500에 맞춰 cover
                         clonedBody.style.backgroundRepeat = 'no-repeat';
                         clonedBody.style.backgroundPosition = 'center';
                     }
@@ -1487,10 +1487,10 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
-                // body가 2500x1800으로 고정되어 렌더링되었으므로
-                // canvas를 2500x1800로 리사이즈 (scale=3이므로 7500x5400 → 2500x1800)
+                // body가 2500x1500으로 고정되어 렌더링되었으므로
+                // canvas를 2500x1500로 리사이즈 (scale=3이므로 7500x4500 → 2500x1500)
                 const finalWidth = 2500;
-                const finalHeight = 1800;
+                const finalHeight = 1500;
 
                 const finalCanvas = document.createElement('canvas');
                 finalCanvas.width = finalWidth;
