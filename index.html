@@ -1321,7 +1321,7 @@
             body.style.width = '2500px';
             body.style.minHeight = '1000px';
             body.style.minWidth = '2500px';
-            body.style.padding = '0';
+            body.style.padding = '50px 0';
             body.style.margin = '100px auto';
             body.style.overflow = 'visible';
             /*
@@ -1365,6 +1365,7 @@
                     clonedBody.style.minHeight = '1000px';
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
+                    clonedBody.style.padding = '50px 0';
                     /*
                     clonedBody.style.display = 'flex';
                     clonedBody.style.alignItems = 'center';
@@ -1471,7 +1472,6 @@
                 }
             }).then(canvas => {
                 // 원래 스타일로 복원
-                /*
                 container.style.background = originalBackground;
                 container.style.padding = originalPadding;
                 formContainer.style.padding = originalFormPadding;
@@ -1486,7 +1486,7 @@
                 formContainer.style.maxWidth = originalFormMaxWidth;
                 container.style.overflow = originalContainerOverflow;
                 formContainer.style.overflow = originalFormOverflow;
-*/
+                
                 // overflow 복원
                 allInputs.forEach((input, index) => {
                     input.style.overflow = originalOverflows[index];
