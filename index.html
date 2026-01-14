@@ -414,10 +414,12 @@
         }
 
         .preview-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
         }
 
         /* 우측 정보 입력 영역 */
@@ -1365,7 +1367,6 @@
                     clonedBody.style.minHeight = '1000px';
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
-                    clonedBody.style.padding = '50px 0';
                     /*
                     clonedBody.style.display = 'flex';
                     clonedBody.style.alignItems = 'center';
@@ -1486,7 +1487,7 @@
                 formContainer.style.maxWidth = originalFormMaxWidth;
                 container.style.overflow = originalContainerOverflow;
                 formContainer.style.overflow = originalFormOverflow;
-                
+
                 // overflow 복원
                 allInputs.forEach((input, index) => {
                     input.style.overflow = originalOverflows[index];
