@@ -1332,7 +1332,7 @@
             container.style.padding = '0';
             container.style.width = '1750px';
             container.style.overflow = 'visible';
-            container.style.margin = '0';
+            container.style.margin = '100px auto';
 
             //formContainer.style.padding = '60px 40px';
             formContainer.style.maxWidth = '1700px';
@@ -1360,12 +1360,14 @@
                     // body를 2500x1500으로 고정하여 배경 이미지가 꽉 차도록
                     const clonedBody = clonedDoc.body;
                     clonedBody.style.width = '2500px';
-                    clonedBody.style.height = '1500px';
+                    clonedBody.style.minHeight = '1300px';
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
+                    /*
                     clonedBody.style.display = 'flex';
                     clonedBody.style.alignItems = 'center';
                     clonedBody.style.justifyContent = 'center';
+                    */
 
                     // 배경 이미지 설정 - 원본 body에서 가져와서 재설정
                     const originalBgImage = window.getComputedStyle(body).backgroundImage;
