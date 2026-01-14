@@ -1467,6 +1467,7 @@
                 }
             }).then(canvas => {
                 // 원래 스타일로 복원
+                /*
                 container.style.background = originalBackground;
                 container.style.padding = originalPadding;
                 formContainer.style.padding = originalFormPadding;
@@ -1481,7 +1482,7 @@
                 formContainer.style.maxWidth = originalFormMaxWidth;
                 container.style.overflow = originalContainerOverflow;
                 formContainer.style.overflow = originalFormOverflow;
-
+*/
                 // overflow 복원
                 allInputs.forEach((input, index) => {
                     input.style.overflow = originalOverflows[index];
