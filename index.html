@@ -1501,16 +1501,8 @@
                 // 최종: 2500x1500px로 다운스케일
                 // ========================================
 
-                const body = document.body;
-                const style = window.getComputedStyle(body);
-
-                const marginTop = parseFloat(style.marginTop);
-                const marginBottom = parseFloat(style.marginBottom);
-
-                const rect = body.getBoundingClientRect();
-
-                const finalHeight = Math.ceil(rect.height + marginTop + marginBottom);
                 const finalWidth = 2500;   // 최종 출력 가로 크기
+                const finalHeight = 1500;  // 최종 출력 세로 크기
 
                 // 최종 출력용 캔버스 생성
                 const finalCanvas = document.createElement('canvas');
