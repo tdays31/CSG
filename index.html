@@ -1317,9 +1317,9 @@
             const originalFormOverflow = formContainer.style.overflow;
             const originalContainerOverflow = container.style.overflow;
 
-            // 저장용 임시 스타일 적용 - body를 2500x1800으로 고정
+            // 저장용 임시 스타일 적용 - body를 2500x1500으로 고정
             body.style.width = '2500px';
-            body.style.height = '1800px';
+            body.style.height = '1500px';
             body.style.minWidth = '2500px';
             body.style.padding = '0';
             body.style.margin = '0';
@@ -1357,10 +1357,10 @@
                     return element.classList.contains('no-export');
                 },
                 onclone: function(clonedDoc) {
-                    // body를 2500x1800으로 고정하여 배경 이미지가 꽉 차도록
+                    // body를 2500x1500으로 고정하여 배경 이미지가 꽉 차도록
                     const clonedBody = clonedDoc.body;
                     clonedBody.style.width = '2500px';
-                    clonedBody.style.height = '1800px';
+                    clonedBody.style.height = '1500px';
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
                     clonedBody.style.display = 'flex';
@@ -1372,7 +1372,7 @@
                     if (originalBgImage && originalBgImage !== 'none') {
                         clonedBody.style.backgroundImage = originalBgImage;
                         clonedBody.style.backgroundAttachment = 'scroll';
-                        clonedBody.style.backgroundSize = 'cover';  // 2500x1800에 맞춰 cover
+                        clonedBody.style.backgroundSize = 'cover';  // 2500x1500에 맞춰 cover
                         clonedBody.style.backgroundRepeat = 'no-repeat';
                         clonedBody.style.backgroundPosition = 'center';
                     }
@@ -1487,21 +1487,32 @@
                     input.style.overflow = originalOverflows[index];
                 });
 
-                // body가 2500x1800으로 고정되어 렌더링되었으므로
-                // canvas를 2500x1800로 리사이즈 (scale=3이므로 7500x5400 → 2500x1800)
-                const finalWidth = 2500;
-                const finalHeight = 1800;
+                // ========================================
+                // 🎨 이미지 저장 후 편집 영역
+                // ========================================
+                // html2canvas로 생성된 원본 캔버스를 최종 출력 크기로 리사이즈
+                // 원본: scale=3으로 렌더링된 7500x4500px 캔버스
+                // 최종: 2500x1500px로 다운스케일
+                // ========================================
 
+                const finalWidth = 2500;   // 최종 출력 가로 크기
+                const finalHeight = 1500;  // 최종 출력 세로 크기
+
+                // 최종 출력용 캔버스 생성
                 const finalCanvas = document.createElement('canvas');
                 finalCanvas.width = finalWidth;
                 finalCanvas.height = finalHeight;
 
                 const ctx = finalCanvas.getContext('2d');
 
-                // canvas를 2500x1800로 리사이즈
+                // 원본 캔버스를 최종 크기로 리사이즈하여 그리기
+                // ctx.drawImage(원본, 원본x, 원본y, 원본width, 원본height, 타겟x, 타겟y, 타겟width, 타겟height)
                 ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height,
                              0, 0, finalWidth, finalHeight);
 
+                // ========================================
+                // 💾 이미지 다운로드
+                // ========================================
                 const link = document.createElement('a');
                 link.download = 'form-image.png';
                 link.href = finalCanvas.toDataURL();
