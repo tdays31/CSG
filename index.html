@@ -1317,12 +1317,13 @@
             const originalFormOverflow = formContainer.style.overflow;
             const originalContainerOverflow = container.style.overflow;
 
-            // 저장용 임시 스타일 적용 - body를 2500x1500으로 고정
+            // 저장용 임시 스타일 적용 - body 가로 2500px 고정, 세로는 유동적
             body.style.width = '2500px';
-            body.style.height = '1500px';
+            body.style.minHeight = '1000px';  // 최소 높이만 설정
+            // body.style.height는 설정하지 않음 - 내용에 따라 자동 조절
             body.style.minWidth = '2500px';
-            body.style.padding = '0';
-            body.style.margin = '0';
+            body.style.padding = '50px 0';
+            body.style.margin = '100px auto';
             body.style.overflow = 'visible';
             body.style.display = 'flex';
             body.style.alignItems = 'center';  // 세로 중앙 정렬
@@ -1357,10 +1358,11 @@
                     return element.classList.contains('no-export');
                 },
                 onclone: function(clonedDoc) {
-                    // body를 2500x1500으로 고정하여 배경 이미지가 꽉 차도록
+                    // body 가로 2500px 고정, 세로는 내용에 따라 유동적
                     const clonedBody = clonedDoc.body;
                     clonedBody.style.width = '2500px';
-                    clonedBody.style.height = '1500px';
+                    clonedBody.style.minHeight = '1000px';  // 최소 높이만 설정
+                    // clonedBody.style.height는 설정하지 않음 - 내용에 따라 자동 조절
                     clonedBody.style.minWidth = '2500px';
                     clonedBody.style.overflow = 'visible';
                     clonedBody.style.display = 'flex';
@@ -1372,7 +1374,7 @@
                     if (originalBgImage && originalBgImage !== 'none') {
                         clonedBody.style.backgroundImage = originalBgImage;
                         clonedBody.style.backgroundAttachment = 'scroll';
-                        clonedBody.style.backgroundSize = 'cover';  // 2500x1500에 맞춰 cover
+                        clonedBody.style.backgroundSize = 'cover';  // 실제 크기에 맞춰 cover
                         clonedBody.style.backgroundRepeat = 'no-repeat';
                         clonedBody.style.backgroundPosition = 'center';
                     }
@@ -1491,12 +1493,13 @@
                 // 🎨 이미지 저장 후 편집 영역
                 // ========================================
                 // html2canvas로 생성된 원본 캔버스를 최종 출력 크기로 리사이즈
-                // 원본: scale=3으로 렌더링된 7500x4500px 캔버스
-                // 최종: 2500x1500px로 다운스케일
+                // 원본: scale=3으로 렌더링된 캔버스 (예: 7500xNpx)
+                // 최종: 가로 2500px 고정, 세로는 실제 렌더링된 높이에 맞춰 유동적으로 계산
                 // ========================================
 
-                const finalWidth = 2500;   // 최종 출력 가로 크기
-                const finalHeight = 1500;  // 최종 출력 세로 크기
+                const scaleValue = 3;  // html2canvas의 scale 값
+                const finalWidth = 2500;   // 최종 출력 가로 크기 (고정)
+                const finalHeight = Math.round(canvas.height / scaleValue);  // 최종 출력 세로 크기 (유동적)
 
                 // 최종 출력용 캔버스 생성
                 const finalCanvas = document.createElement('canvas');
