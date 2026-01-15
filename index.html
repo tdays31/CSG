@@ -727,12 +727,17 @@
         <h3>🎨 색상 설정</h3>
 
         <div class="control-group">
-            <label>Primary Color</label>
+            <label>배경 이미지 URL</label>
+            <input type="text" id="bgImageUrl" placeholder="이미지 URL 입력" onchange="updateBackgroundImage(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>배경 이미지 시작 색</label>
             <input type="color" id="primaryColor" value="#667eea" onchange="updateStyle('--primary-color', this.value)">
         </div>
 
         <div class="control-group">
-            <label>Secondary Color</label>
+            <label>배경 이미지 끝 색</label>
             <input type="color" id="secondaryColor" value="#764ba2" onchange="updateStyle('--secondary-color', this.value)">
         </div>
 
@@ -775,34 +780,22 @@
         </div>
 
         <div class="control-group">
-            <label>키워드 텍스트색</label>
+            <label>키워드 색상</label>
             <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>이미지 배경색 (시작)</label>
-            <input type="color" id="imageBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>이미지 배경색 (끝)</label>
-            <input type="color" id="imageBgEnd" value="#c3cfe2" onchange="updateStyle('--image-bg-end', this.value)">
         </div>
 
         <h3>📏 크기 설정</h3>
 
         <div class="control-group">
-            <label>Border Radius (px)</label>
+            <label>Border Radius: <span id="radiusValue">16</span></label>
             <input type="range" id="borderRadius" min="0" max="30" value="16"
                    oninput="updateStyle('--border-radius', this.value + 'px'); document.getElementById('radiusValue').textContent = this.value">
-            <span id="radiusValue">16</span>px
         </div>
 
         <div class="control-group">
-            <label>Input Border Radius (px)</label>
+            <label>Input Border Radius: <span id="inputRadiusValue">12</span></label>
             <input type="range" id="inputRadius" min="0" max="24" value="12"
                    oninput="updateStyle('--input-radius', this.value + 'px'); document.getElementById('inputRadiusValue').textContent = this.value">
-            <span id="inputRadiusValue">12</span>px
         </div>
 
         <div class="control-group">
@@ -816,11 +809,6 @@
         </div>
 
         <h3>⚙️ 기타 설정</h3>
-
-        <div class="control-group">
-            <label>배경 이미지 URL</label>
-            <input type="text" id="bgImageUrl" placeholder="이미지 URL 입력" onchange="updateBackgroundImage(this.value)">
-        </div>
 
         <div class="control-group">
             <label>폰트 선택</label>
@@ -1364,12 +1352,12 @@
             });
 
             html2canvas(body, {
-                scale: 4,  // 텍스트 선명도 향상 (3 → 4로 증가)
+                scale: 4,  // 텍스트 선명도 향상
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
                 allowTaint: false,
-                letterRendering: true,
+                letterRendering: false,  // 도트 형식 깨짐 방지
                 ignoreElements: function(element) {
                     return element.classList.contains('no-export');
                 },
@@ -1645,7 +1633,7 @@
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'smallTextColor',
             'stickerBgColor', 'stickerTextColor',
-            'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
+            'borderRadius', 'inputRadius',
             'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize'
         ];
 
@@ -1753,8 +1741,6 @@
                             else if (id === 'smallTextColor') updateStyle('--small-text-color', data[id]);
                             else if (id === 'stickerBgColor') updateStyle('--sticker-bg', data[id]);
                             else if (id === 'stickerTextColor') updateStyle('--sticker-text', data[id]);
-                            else if (id === 'imageBgStart') updateStyle('--image-bg-start', data[id]);
-                            else if (id === 'imageBgEnd') updateStyle('--image-bg-end', data[id]);
                             else if (id === 'borderRadius') {
                                 updateStyle('--border-radius', data[id] + 'px');
                                 document.getElementById('radiusValue').textContent = data[id];
