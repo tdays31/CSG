@@ -724,7 +724,7 @@
     </button>
 
     <div class="customize-panel no-export" id="customizePanel">
-        <h3>디자인 설정</h3>
+        <h3>🎨 색상 설정</h3>
 
         <div class="control-group">
             <label>Primary Color</label>
@@ -770,6 +770,16 @@
         </div>
 
         <div class="control-group">
+            <label>키워드 배경색</label>
+            <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>키워드 텍스트색</label>
+            <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)">
+        </div>
+
+        <div class="control-group">
             <label>이미지 배경색 (시작)</label>
             <input type="color" id="imageBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value)">
         </div>
@@ -778,6 +788,8 @@
             <label>이미지 배경색 (끝)</label>
             <input type="color" id="imageBgEnd" value="#c3cfe2" onchange="updateStyle('--image-bg-end', this.value)">
         </div>
+
+        <h3>📏 크기 설정</h3>
 
         <div class="control-group">
             <label>Border Radius (px)</label>
@@ -792,6 +804,18 @@
                    oninput="updateStyle('--input-radius', this.value + 'px'); document.getElementById('inputRadiusValue').textContent = this.value">
             <span id="inputRadiusValue">12</span>px
         </div>
+
+        <div class="control-group">
+            <label>메인 내용 크기: <span id="inputFontSizeValue">14</span>px</label>
+            <input type="range" min="10" max="24" value="14" step="1" id="inputFontSize" oninput="updateInputFontSize(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>서브 제목 크기: <span id="labelFontSizeValue">11</span>px</label>
+            <input type="range" min="8" max="18" value="11" step="1" id="labelFontSize" oninput="updateLabelFontSize(this.value)">
+        </div>
+
+        <h3>⚙️ 기타 설정</h3>
 
         <div class="control-group">
             <label>배경 이미지 URL</label>
@@ -827,16 +851,6 @@
                 <option value="NanumSquare_acB">나눔스퀘어 AC Bold</option>
                 <option value="NanumSquare_acEB">나눔스퀘어 AC ExtraBold</option>
             </select>
-        </div>
-
-        <div class="control-group">
-            <label>메인 내용 크기: <span id="inputFontSizeValue">14</span>px</label>
-            <input type="range" min="10" max="24" value="14" step="1" id="inputFontSize" oninput="updateInputFontSize(this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>서브 제목 크기: <span id="labelFontSizeValue">11</span>px</label>
-            <input type="range" min="8" max="18" value="11" step="1" id="labelFontSize" oninput="updateLabelFontSize(this.value)">
         </div>
 
         <div class="control-group">
@@ -1350,7 +1364,7 @@
             });
 
             html2canvas(body, {
-                scale: 3,  // 텍스트 선명도 향상
+                scale: 4,  // 텍스트 선명도 향상 (3 → 4로 증가)
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
@@ -1495,11 +1509,11 @@
                 // 🎨 이미지 저장 후 편집 영역
                 // ========================================
                 // html2canvas로 생성된 원본 캔버스를 최종 출력 크기로 리사이즈
-                // 원본: scale=3으로 렌더링된 캔버스 (예: 7500xNpx)
+                // 원본: scale=4로 렌더링된 캔버스 (예: 10000xNpx)
                 // 최종: 가로 2500px 고정, 세로는 실제 렌더링된 높이에 맞춰 유동적으로 계산
                 // ========================================
 
-                const scaleValue = 3;  // html2canvas의 scale 값
+                const scaleValue = 4;  // html2canvas의 scale 값
                 const finalWidth = 2500;   // 최종 출력 가로 크기 (고정)
                 const finalHeight = Math.round(canvas.height / scaleValue);  // 최종 출력 세로 크기 (유동적)
 
@@ -1509,6 +1523,10 @@
                 finalCanvas.height = finalHeight;
 
                 const ctx = finalCanvas.getContext('2d');
+
+                // 고품질 이미지 스무딩 설정 (텍스트 깨짐 방지)
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
 
                 // 원본 캔버스를 최종 크기로 리사이즈하여 그리기
                 // ctx.drawImage(원본, 원본x, 원본y, 원본width, 원본height, 타겟x, 타겟y, 타겟width, 타겟height)
@@ -1626,6 +1644,7 @@
         const designFields = [
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'smallTextColor',
+            'stickerBgColor', 'stickerTextColor',
             'imageBgStart', 'imageBgEnd', 'borderRadius', 'inputRadius',
             'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize'
         ];
@@ -1732,6 +1751,8 @@
                             else if (id === 'textColorBase') updateTextColors();
                             else if (id === 'subTextColor') updateStyle('--label-color', data[id]);
                             else if (id === 'smallTextColor') updateStyle('--small-text-color', data[id]);
+                            else if (id === 'stickerBgColor') updateStyle('--sticker-bg', data[id]);
+                            else if (id === 'stickerTextColor') updateStyle('--sticker-text', data[id]);
                             else if (id === 'imageBgStart') updateStyle('--image-bg-start', data[id]);
                             else if (id === 'imageBgEnd') updateStyle('--image-bg-end', data[id]);
                             else if (id === 'borderRadius') {
