@@ -530,7 +530,7 @@
 
         textarea {
             min-height: 100px;
-            resize: vertical;
+            resize: none;
             border: none;
             padding: 10px 8px;
             line-height: 1.6;
@@ -775,7 +775,7 @@
         </div>
 
         <div class="control-group">
-            <label>키워드 배경색</label>
+            <label>키워드 전체 배경색</label>
             <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)">
         </div>
 
@@ -785,6 +785,16 @@
         </div>
 
         <h3>📏 크기 설정</h3>
+
+        <div class="control-group">
+            <label>한마디 텍스트 크기: <span id="topInputFontSizeValue">28</span>px</label>
+            <input type="range" min="16" max="48" value="28" step="1" id="topInputFontSize" oninput="updateTopInputFontSize(this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>키워드 텍스트 크기: <span id="stickerFontSizeValue">15</span>px</label>
+            <input type="range" min="10" max="24" value="15" step="1" id="stickerFontSize" oninput="updateStickerFontSize(this.value)">
+        </div>
 
         <div class="control-group">
             <label>Border Radius: <span id="radiusValue">16</span></label>
@@ -960,7 +970,7 @@
             <!-- 오너 성향 -->
             <div class="owner-section">
                 <div class="section-title">오너 성향</div>
-                <input type="text" id="owner4" placeholder="트리거 작성" style="width: 100%;" />
+                <textarea id="owner4" placeholder="트리거 작성" style="width: 100%; min-height: 80px;"></textarea>
             </div>
 
             <!-- 저장 버튼 (나중에 활성화) -->
@@ -1043,6 +1053,42 @@
             style.textContent = `
                 .input-group label,
                 .bottom-section > label {
+                    font-size: ${size}px !important;
+                }
+            `;
+            document.head.appendChild(style);
+            saveToLocalStorage();
+        }
+
+        // 한마디 텍스트 크기 업데이트
+        function updateTopInputFontSize(size) {
+            document.getElementById('topInputFontSizeValue').textContent = size;
+            const style = document.createElement('style');
+            style.id = 'top-input-font-size-style';
+            const existingStyle = document.getElementById('top-input-font-size-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            style.textContent = `
+                #topInput {
+                    font-size: ${size}px !important;
+                }
+            `;
+            document.head.appendChild(style);
+            saveToLocalStorage();
+        }
+
+        // 키워드 텍스트 크기 업데이트
+        function updateStickerFontSize(size) {
+            document.getElementById('stickerFontSizeValue').textContent = size;
+            const style = document.createElement('style');
+            style.id = 'sticker-font-size-style';
+            const existingStyle = document.getElementById('sticker-font-size-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            style.textContent = `
+                .label-sticker {
                     font-size: ${size}px !important;
                 }
             `;
@@ -1634,7 +1680,8 @@
             'textColorBase', 'subTextColor', 'smallTextColor',
             'stickerBgColor', 'stickerTextColor',
             'borderRadius', 'inputRadius',
-            'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize'
+            'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize',
+            'topInputFontSize', 'stickerFontSize'
         ];
 
         // 체크박스 필드 목록
@@ -1758,6 +1805,14 @@
                             else if (id === 'labelFontSize') {
                                 updateLabelFontSize(data[id]);
                                 document.getElementById('labelFontSize').value = data[id];
+                            }
+                            else if (id === 'topInputFontSize') {
+                                updateTopInputFontSize(data[id]);
+                                document.getElementById('topInputFontSize').value = data[id];
+                            }
+                            else if (id === 'stickerFontSize') {
+                                updateStickerFontSize(data[id]);
+                                document.getElementById('stickerFontSize').value = data[id];
                             }
                         }
                     }
