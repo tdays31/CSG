@@ -773,12 +773,7 @@
         </div>
 
         <div class="control-group">
-            <label>키워드 배경색</label>
-            <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)">
-        </div>
-
-        <div class="control-group">
-            <label>키워드 텍스트색</label>
+            <label>키워드 색상</label>
             <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)">
         </div>
 
@@ -1630,7 +1625,7 @@
         const designFields = [
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'smallTextColor',
-            'stickerBgColor', 'stickerTextColor',
+            'stickerTextColor',
             'borderRadius', 'inputRadius',
             'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize'
         ];
@@ -1737,7 +1732,6 @@
                             else if (id === 'textColorBase') updateTextColors();
                             else if (id === 'subTextColor') updateStyle('--label-color', data[id]);
                             else if (id === 'smallTextColor') updateStyle('--small-text-color', data[id]);
-                            else if (id === 'stickerBgColor') updateStyle('--sticker-bg', data[id]);
                             else if (id === 'stickerTextColor') updateStyle('--sticker-text', data[id]);
                             else if (id === 'borderRadius') {
                                 updateStyle('--border-radius', data[id] + 'px');
