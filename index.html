@@ -1348,7 +1348,7 @@
             });
 
             html2canvas(body, {
-                scale: 3,  // 텍스트 선명도 향상
+                scale: 4,  // 텍스트 선명도 향상 (3 → 4로 증가)
                 backgroundColor: null,
                 logging: false,
                 useCORS: true,
@@ -1493,11 +1493,11 @@
                 // 🎨 이미지 저장 후 편집 영역
                 // ========================================
                 // html2canvas로 생성된 원본 캔버스를 최종 출력 크기로 리사이즈
-                // 원본: scale=3으로 렌더링된 캔버스 (예: 7500xNpx)
+                // 원본: scale=4로 렌더링된 캔버스 (예: 10000xNpx)
                 // 최종: 가로 2500px 고정, 세로는 실제 렌더링된 높이에 맞춰 유동적으로 계산
                 // ========================================
 
-                const scaleValue = 3;  // html2canvas의 scale 값
+                const scaleValue = 4;  // html2canvas의 scale 값
                 const finalWidth = 2500;   // 최종 출력 가로 크기 (고정)
                 const finalHeight = Math.round(canvas.height / scaleValue);  // 최종 출력 세로 크기 (유동적)
 
@@ -1507,6 +1507,10 @@
                 finalCanvas.height = finalHeight;
 
                 const ctx = finalCanvas.getContext('2d');
+
+                // 고품질 이미지 스무딩 설정 (텍스트 깨짐 방지)
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
 
                 // 원본 캔버스를 최종 크기로 리사이즈하여 그리기
                 // ctx.drawImage(원본, 원본x, 원본y, 원본width, 원본height, 타겟x, 타겟y, 타겟width, 타겟height)
