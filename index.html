@@ -731,12 +731,12 @@
 
         <div class="control-group">
             <label>배경 이미지 시작 색</label>
-            <input type="color" id="primaryColor" value="#667eea" onchange="updateStyle('--primary-color', this.value)" oninput="updateStyle('--primary-color', this.value)">
+            <input type="color" id="primaryColor" value="#667eea" onchange="updateStyle('--primary-color', this.value); this.blur();" oninput="updateStyle('--primary-color', this.value)">
         </div>
 
         <div class="control-group">
             <label>배경 이미지 끝 색</label>
-            <input type="color" id="secondaryColor" value="#764ba2" onchange="updateStyle('--secondary-color', this.value)" oninput="updateStyle('--secondary-color', this.value)">
+            <input type="color" id="secondaryColor" value="#764ba2" onchange="updateStyle('--secondary-color', this.value); this.blur();" oninput="updateStyle('--secondary-color', this.value)">
         </div>
 
         <div class="control-group">
@@ -764,32 +764,32 @@
 
         <div class="control-group">
             <label>서브텍스트 색상</label>
-            <input type="color" id="subTextColor" value="#999999" onchange="updateStyle('--label-color', this.value)" oninput="updateStyle('--label-color', this.value)">
+            <input type="color" id="subTextColor" value="#999999" onchange="updateStyle('--label-color', this.value); this.blur();" oninput="updateStyle('--label-color', this.value)">
         </div>
 
         <div class="control-group">
             <label>작은글씨 색상</label>
-            <input type="color" id="smallTextColor" value="#999999" onchange="updateStyle('--small-text-color', this.value)" oninput="updateStyle('--small-text-color', this.value)">
+            <input type="color" id="smallTextColor" value="#999999" onchange="updateStyle('--small-text-color', this.value); this.blur();" oninput="updateStyle('--small-text-color', this.value)">
         </div>
 
         <div class="control-group">
             <label>키워드 전체 배경색</label>
-            <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)" oninput="updateStyle('--sticker-bg', this.value)">
+            <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value); this.blur();" oninput="updateStyle('--sticker-bg', this.value)">
         </div>
 
         <div class="control-group">
             <label>키워드 색상</label>
-            <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)" oninput="updateStyle('--sticker-text', this.value)">
+            <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value); this.blur();" oninput="updateStyle('--sticker-text', this.value)">
         </div>
 
         <div class="control-group">
             <label>프로필 이미지 배경색 시작</label>
-            <input type="color" id="profileBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value)" oninput="updateStyle('--image-bg-start', this.value)">
+            <input type="color" id="profileBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value); this.blur();" oninput="updateStyle('--image-bg-start', this.value)">
         </div>
 
         <div class="control-group">
             <label>프로필 이미지 배경색 끝</label>
-            <input type="color" id="profileBgEnd" value="#c3cfe2" onchange="updateStyle('--image-bg-end', this.value)" oninput="updateStyle('--image-bg-end', this.value)">
+            <input type="color" id="profileBgEnd" value="#c3cfe2" onchange="updateStyle('--image-bg-end', this.value); this.blur();" oninput="updateStyle('--image-bg-end', this.value)">
         </div>
 
         <div class="control-group">
