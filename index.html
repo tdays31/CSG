@@ -733,12 +733,12 @@
 
         <div class="control-group">
             <label>배경 이미지 시작 색</label>
-            <input type="color" id="primaryColor" value="#667eea" onchange="updateStyle('--primary-color', this.value)">
+            <input type="color" id="primaryColor" value="#667eea" onchange="updateStyle('--primary-color', this.value); this.blur();" oninput="updateStyle('--primary-color', this.value)">
         </div>
 
         <div class="control-group">
             <label>배경 이미지 끝 색</label>
-            <input type="color" id="secondaryColor" value="#764ba2" onchange="updateStyle('--secondary-color', this.value)">
+            <input type="color" id="secondaryColor" value="#764ba2" onchange="updateStyle('--secondary-color', this.value); this.blur();" oninput="updateStyle('--secondary-color', this.value)">
         </div>
 
         <div class="control-group">
@@ -766,22 +766,39 @@
 
         <div class="control-group">
             <label>서브텍스트 색상</label>
-            <input type="color" id="subTextColor" value="#999999" onchange="updateStyle('--label-color', this.value)">
+            <input type="color" id="subTextColor" value="#999999" onchange="updateStyle('--label-color', this.value); this.blur();" oninput="updateStyle('--label-color', this.value)">
         </div>
 
         <div class="control-group">
             <label>작은글씨 색상</label>
-            <input type="color" id="smallTextColor" value="#999999" onchange="updateStyle('--small-text-color', this.value)">
+            <input type="color" id="smallTextColor" value="#999999" onchange="updateStyle('--small-text-color', this.value); this.blur();" oninput="updateStyle('--small-text-color', this.value)">
         </div>
 
         <div class="control-group">
             <label>키워드 전체 배경색</label>
-            <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value)">
+            <input type="color" id="stickerBgColor" value="#ff6b6b" onchange="updateStyle('--sticker-bg', this.value); this.blur();" oninput="updateStyle('--sticker-bg', this.value)">
         </div>
 
         <div class="control-group">
             <label>키워드 색상</label>
-            <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value)">
+            <input type="color" id="stickerTextColor" value="#ffffff" onchange="updateStyle('--sticker-text', this.value); this.blur();" oninput="updateStyle('--sticker-text', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>프로필 이미지 배경색 시작</label>
+            <input type="color" id="profileBgStart" value="#f5f7fa" onchange="updateStyle('--image-bg-start', this.value); this.blur();" oninput="updateStyle('--image-bg-start', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>프로필 이미지 배경색 끝</label>
+            <input type="color" id="profileBgEnd" value="#c3cfe2" onchange="updateStyle('--image-bg-end', this.value); this.blur();" oninput="updateStyle('--image-bg-end', this.value)">
+        </div>
+
+        <div class="control-group">
+            <label>
+                <input type="checkbox" id="removeProfileBg" onchange="toggleProfileBackground()">
+                프로필 배경 제거 (투명)
+            </label>
         </div>
 
         <h3>📏 크기 설정</h3>
@@ -1231,6 +1248,29 @@
             ownerSection.style.display = isChecked ? 'block' : 'none';
         }
 
+        // 프로필 배경 제거 토글
+        function toggleProfileBackground() {
+            const imageUploadArea = document.querySelector('.image-upload-area');
+            const isChecked = document.getElementById('removeProfileBg').checked;
+            const profileBgStart = document.getElementById('profileBgStart');
+            const profileBgEnd = document.getElementById('profileBgEnd');
+
+            if (isChecked) {
+                imageUploadArea.style.background = 'transparent';
+                profileBgStart.disabled = true;
+                profileBgEnd.disabled = true;
+            } else {
+                const startColor = profileBgStart.value;
+                const endColor = profileBgEnd.value;
+                imageUploadArea.style.background = `linear-gradient(135deg, ${startColor} 0%, ${endColor} 100%)`;
+                updateStyle('--image-bg-start', startColor);
+                updateStyle('--image-bg-end', endColor);
+                profileBgStart.disabled = false;
+                profileBgEnd.disabled = false;
+            }
+            saveToLocalStorage();
+        }
+
         // 라벨 스티커 관리
         let labelStickers = [];
         const MAX_LABELS = 10;
@@ -1362,7 +1402,14 @@
             const originalBodyWidth = body.style.width;
             const originalBodyHeight = body.style.height;
             const originalBodyMinWidth = body.style.minWidth;
+            const originalBodyMinHeight = body.style.minHeight;
+            const originalBodyMargin = body.style.margin;
+            const originalBodyOverflow = body.style.overflow;
+            const originalBodyDisplay = body.style.display;
+            const originalBodyAlignItems = body.style.alignItems;
+            const originalBodyJustifyContent = body.style.justifyContent;
             const originalContainerWidth = container.style.width;
+            const originalContainerMargin = container.style.margin;
             const originalFormMaxWidth = formContainer.style.maxWidth;
             const originalFormOverflow = formContainer.style.overflow;
             const originalContainerOverflow = container.style.overflow;
@@ -1526,10 +1573,14 @@
                 body.style.width = originalBodyWidth;
                 body.style.height = originalBodyHeight;
                 body.style.minWidth = originalBodyMinWidth;
-                body.style.display = '';  // 원래대로
-                body.style.alignItems = '';
-                body.style.justifyContent = '';
+                body.style.minHeight = originalBodyMinHeight;
+                body.style.margin = originalBodyMargin;
+                body.style.overflow = originalBodyOverflow;
+                body.style.display = originalBodyDisplay;
+                body.style.alignItems = originalBodyAlignItems;
+                body.style.justifyContent = originalBodyJustifyContent;
                 container.style.width = originalContainerWidth;
+                container.style.margin = originalContainerMargin;
                 formContainer.style.maxWidth = originalFormMaxWidth;
                 container.style.overflow = originalContainerOverflow;
                 formContainer.style.overflow = originalFormOverflow;
@@ -1679,6 +1730,7 @@
             'primaryColor', 'secondaryColor', 'inputBgBase', 'inputBgAlpha',
             'textColorBase', 'subTextColor', 'smallTextColor',
             'stickerBgColor', 'stickerTextColor',
+            'profileBgStart', 'profileBgEnd',
             'borderRadius', 'inputRadius',
             'bgImageUrl', 'fontSelect', 'inputFontSize', 'labelFontSize',
             'topInputFontSize', 'stickerFontSize'
@@ -1686,7 +1738,7 @@
 
         // 체크박스 필드 목록
         const checkboxFields = [
-            'birthInputsToggle', 'birthUnknownToggle', 'ownerSectionToggle'
+            'birthInputsToggle', 'birthUnknownToggle', 'ownerSectionToggle', 'removeProfileBg'
         ];
 
         // 데이터 저장
@@ -1788,6 +1840,8 @@
                             else if (id === 'smallTextColor') updateStyle('--small-text-color', data[id]);
                             else if (id === 'stickerBgColor') updateStyle('--sticker-bg', data[id]);
                             else if (id === 'stickerTextColor') updateStyle('--sticker-text', data[id]);
+                            else if (id === 'profileBgStart') updateStyle('--image-bg-start', data[id]);
+                            else if (id === 'profileBgEnd') updateStyle('--image-bg-end', data[id]);
                             else if (id === 'borderRadius') {
                                 updateStyle('--border-radius', data[id] + 'px');
                                 document.getElementById('radiusValue').textContent = data[id];
@@ -1829,6 +1883,7 @@
                             if (id === 'birthInputsToggle') toggleBirthInputs();
                             else if (id === 'birthUnknownToggle') toggleBirthUnknown();
                             else if (id === 'ownerSectionToggle') toggleOwnerSection();
+                            else if (id === 'removeProfileBg') toggleProfileBackground();
                         }
                     }
                 });
