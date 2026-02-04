@@ -1301,6 +1301,10 @@
                 e.stopPropagation();
                 sticker.style.background = e.target.value;
                 colorInput.blur();
+                // 한글 IME 복원을 위해 sticker에 포커스 복귀
+                setTimeout(function() {
+                    sticker.focus();
+                }, 100);
             };
             colorBtn.appendChild(colorInput);
 
