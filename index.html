@@ -742,7 +742,7 @@
         </div>
 
         <div class="control-group">
-            <label>Input Background</label>
+            <label>프로필 바탕 라운딩</label>
             <select id="inputBgBase" onchange="updateInputBgBase()">
                 <option value="#ffffff" selected>화이트 (#fff)</option>
                 <option value="#333333">짙은 회색 (#333)</option>
@@ -750,7 +750,7 @@
         </div>
 
         <div class="control-group">
-            <label>Input Background 투명도</label>
+            <label>프로필 바탕 라운딩 투명도</label>
             <input type="range" id="inputBgAlpha" min="0" max="1" step="0.05" value="0.9"
                    oninput="updateInputBgBase(); document.getElementById('alphaValue').textContent = this.value">
             <span id="alphaValue">0.9</span>
